@@ -2,12 +2,16 @@
 import React, { useState } from "react";
 import "../css/LoginPage.css";
 import autoTraceLogo from "../assets/autoTraceLogo.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -16,14 +20,33 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
-    // 🔹 Replace with your Spring Boot API
-    console.log("Login Data:", formData);
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        formData,
+      );
+      console.log("Response: ", response.data);
 
-    // Example:
-    // fetch("http://localhost:8080/api/auth/login", { ... })
+      const user = response.data;
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (user.role === "ADMIN") {
+        navigate("/admin-dashboard");
+      } else if (user.role === "INVESTIGATOR") {
+        navigate("/investigator-dashboard");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Invalid Email or Password");
+    }
+    setLoading(false);
   };
 
   return (
@@ -55,8 +78,8 @@ const LoginPage = () => {
             />
           </div>
 
-          <button type="submit" className="login-btn">
-            Login
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
