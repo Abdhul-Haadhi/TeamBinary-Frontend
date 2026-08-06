@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import NavBar from "../components/NavBar";
+import SideBar from "../components/SideBar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -20,15 +23,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <button
-        style={{ backgroundColor: "red", color: "white" }}
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
-    </div>
+
+    <h2>dashboard</h2>
+
   );
 };
 
