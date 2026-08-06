@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Report from "./Report/Report.jsx";
+import classification from "./vehicleclassification/classification.jsx";
 import VehicleReport from "./Report/VehicleReport.jsx";
 import PlateReport from "./Report/PlateReport.jsx";
 import TrackingReport from "./Report/TrackingReport.jsx";
