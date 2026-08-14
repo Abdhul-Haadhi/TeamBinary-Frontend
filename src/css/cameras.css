@@ -1,0 +1,95 @@
+ /*───────────────────────────────────────────────────────────────── */
+  /* cameras.css
+   Custom styles that cannot be achieved with Tailwind utilities alone
+   ───────────────────────────────────────────────────────────────── */
+
+/* ── Google Font ─────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* ── Root font override ──────────────────────────────────────────── */
+.cm-root {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* ── Custom scrollbar (table horizontal scroll) ──────────────────── */
+.cm-table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.cm-table-scroll::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+.cm-table-scroll::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+.cm-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* ── Badge pulse animation (active camera indicator) ─────────────── */
+@keyframes cm-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+.cm-badge-pulse {
+  animation: cm-pulse 2s ease-in-out infinite;
+}
+
+/* ── Smooth modal fade-in ─────────────────────────────────────────── */
+@keyframes cm-fade-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+.cm-modal-box {
+  animation: cm-fade-in 0.18s ease-out;
+}
+
+/* ── Toast slide-in ───────────────────────────────────────────────── */
+@keyframes cm-slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+.cm-toast-anim {
+  animation: cm-slide-in 0.22s ease-out;
+}
+
+/* ── Select option dark background (browser override) ────────────── */
+select.cm-select option {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+
+/* ── Monospace inputs (IP address field) ──────────────────────────── */
+input.cm-mono {
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 0.04em;
+}
+
+/* ── Table row transition ─────────────────────────────────────────── */
+.cm-table-row {
+  transition: background-color 0.15s ease;
+}
+
+/* ── Network card hover glow ──────────────────────────────────────── */
+.cm-net-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.cm-net-card:hover {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25),
+              0 4px 20px rgba(59, 130, 246, 0.08);
+}
+
+/* ── Stat card number counter animation ───────────────────────────── */
+@keyframes cm-count-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.cm-stat-value {
+  animation: cm-count-up 0.3s ease-out;
+}
+
+/* ── Focus ring override for accessibility ────────────────────────── */
+.cm-focus-ring:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
