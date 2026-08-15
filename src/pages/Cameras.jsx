@@ -366,7 +366,7 @@ export default function CameraManagement() {
     if (!netName.trim()) { setNetErr("Network name is required"); return; }
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE}/networks`, {
+      const res = await fetch(`${API_BASE}/networks/add-network`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ networkName: netName.trim(), status: "ACTIVE" }),
@@ -451,7 +451,7 @@ export default function CameraManagement() {
   // Render
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6"
+    <div className="min-h-screen bg-white-950 text-gray p-6"
          style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
 
       {/* ── Toast ── */}
