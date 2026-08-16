@@ -7,16 +7,35 @@ import SearchPanel from "../components/SearchPanel";
 import VehicleResults from "../components/VehicleResults";
 
 export default function VehicleSearch() {
+
+  // ============================================================
+  // VEHICLE IMAGE
+  // ============================================================
+
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  const [loading, setLoading] = useState(false);
+  // ============================================================
+  // VEHICLE DESCRIPTION
+  // ============================================================
 
+  const [description, setDescription] = useState("");
+
+  // ============================================================
+  // SEARCH STATE
+  // ============================================================
+
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
+  // ============================================================
+  // SEARCH VEHICLE
+  // ============================================================
+
   const handleSearch = async () => {
+
     if (!image) {
-      alert("Please upload a vehicle image first.");
+      alert("Please upload a vehicle image.");
       return;
     }
 
@@ -24,80 +43,225 @@ export default function VehicleSearch() {
     setResult(null);
 
     try {
-      /*
-       * Temporary mock AI processing.
-       *
-       * Later we will replace this section
-       * with the Spring Boot API request.
-       */
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 2500)
+      // ========================================================
+      // CREATE FORM DATA
+      // ========================================================
+
+      const formData = new FormData();
+
+      formData.append("file", image);
+
+      // ========================================================
+      // SEND IMAGE TO SPRING BOOT
+      // ========================================================
+
+      const response = await fetch(
+        "http://localhost:8080/api/vehicles/search",
+        {
+          method: "POST",
+          body: formData,
+        }
       );
 
-      const mockResult = {
+      // ========================================================
+      // CHECK RESPONSE
+      // ========================================================
+
+      if (!response.ok) {
+        throw new Error(
+          `Server returned ${response.status}`
+        );
+      }
+
+      // ========================================================
+      // READ RESPONSE
+      // ========================================================
+
+      const data = await response.json();
+
+      console.log(
+        "Vehicle search response:",
+        data
+      );
+
+      // ========================================================
+      // HANDLE AI FAILURE
+      // ========================================================
+
+      if (!data.success) {
+
+        alert(
+          data.message ||
+          "No vehicle match found."
+        );
+
+        return;
+      }
+
+      // ========================================================
+      // GET MATCHES
+      // ========================================================
+
+      const matches = Array.isArray(data.matches)
+        ? data.matches
+        : [];
+
+      // ========================================================
+      // BEST MATCH
+      // ========================================================
+
+      const bestMatch =
+        matches.length > 0
+          ? matches[0]
+          : null;
+
+      // ========================================================
+      // VEHICLE TYPE
+      //
+      // Sometimes YOLO doesn't return vehicleType at
+      // top level, but the best similarity match does.
+      // ========================================================
+
+      const vehicleType =
+        data.vehicleType ||
+        bestMatch?.vehicleType ||
+        "Unknown";
+
+      // ========================================================
+      // VEHICLE COLOR
+      // ========================================================
+
+      const vehicleColor =
+        data.color ||
+        "Unknown";
+
+      // ========================================================
+      // BEST MATCH SIMILARITY
+      // ========================================================
+
+      const bestSimilarity =
+        bestMatch
+          ? Number(bestMatch.similarity || 0)
+          : 0;
+
+      // Convert 0.658 -> 65.8
+      const matchConfidence =
+        Math.round(
+          bestSimilarity * 1000
+        ) / 10;
+
+      // ========================================================
+      // BUILD FRONTEND RESULT
+      // ========================================================
+
+      const formattedResult = {
+
+        // Uploaded image preview
         image: preview,
 
-        confidence: 97,
+        // Vehicle information
+        vehicleType: vehicleType,
 
-        vehicleType: "Sedan",
+        color: vehicleColor,
 
-        numberPlate: "CAA-1234",
+        // YOLO confidence
+        detectionConfidence:
+          Number(
+            data.detectionConfidence || 0
+          ),
 
-        color: "White",
+        // Best similarity
+        confidence:
+          matchConfidence,
 
-        camera: "Camera 04",
+        // All matches
+        matches: matches,
 
-        location: "Galle Road - Camera Zone 04",
-
-        time: "09:42 PM",
+        // Original API response
+        rawData: data,
       };
 
-      setResult(mockResult);
+      console.log(
+        "Formatted frontend result:",
+        formattedResult
+      );
+
+      // ========================================================
+      // SAVE RESULT
+      // ========================================================
+
+      setResult(formattedResult);
 
     } catch (error) {
-      console.error(error);
 
-      alert("Vehicle search failed.");
+      console.error(
+        "Vehicle search error:",
+        error
+      );
+
+      alert(
+        "Unable to connect to the vehicle AI service. Please make sure Spring Boot and FastAPI are running."
+      );
 
     } finally {
+
       setLoading(false);
+
     }
   };
 
+  // ============================================================
+  // PAGE
+  // ============================================================
+
   return (
-    <main className="min-h-screen bg-[#F5F7FA]">
+    <div className="mx-auto max-w-7xl px-6 py-8">
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      {/* ======================================================
+          HERO
+      ====================================================== */}
 
-        {/* Hero */}
-        <Hero />
+      <Hero />
 
-        {/* Upload + Description */}
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
+      {/* ======================================================
+          IMAGE + DESCRIPTION
+      ====================================================== */}
 
-          <UploadCard
-            image={image}
-            preview={preview}
-            setImage={setImage}
-            setPreview={setPreview}
-          />
+      <div className="mt-10 grid gap-8 lg:grid-cols-2">
 
-          <VehicleDescription />
-
-        </div>
-
-        {/* Search */}
-        <SearchPanel
-          loading={loading}
-          onSearch={handleSearch}
+        <UploadCard
+          image={image}
+          preview={preview}
+          setImage={setImage}
+          setPreview={setPreview}
         />
 
-        {/* Results */}
-        <VehicleResults result={result} />
+        <VehicleDescription
+          description={description}
+          setDescription={setDescription}
+        />
 
       </div>
 
-    </main>
+      {/* ======================================================
+          SEARCH
+      ====================================================== */}
+
+      <SearchPanel
+        loading={loading}
+        onSearch={handleSearch}
+      />
+
+      {/* ======================================================
+          RESULTS
+      ====================================================== */}
+
+      <VehicleResults
+        result={result}
+        preview={preview}
+      />
+
+    </div>
   );
 }
