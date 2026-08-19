@@ -1,0 +1,321 @@
+.number-plate-page {
+    min-height: 100vh;
+    background: #f5f7fb;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.number-plate-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================
+   Header
+========================= */
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    margin: 0 0 10px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* =========================
+   Upload Card
+========================= */
+
+.upload-card {
+    background: white;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    margin-bottom: 30px;
+}
+
+.upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    min-height: 220px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+
+    text-align: center;
+}
+
+.upload-area:hover {
+    border-color: #2563eb;
+    background: #f8faff;
+}
+
+.upload-area input {
+    display: none;
+}
+
+.upload-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.upload-area h3 {
+    margin: 5px 0;
+    font-size: 20px;
+    color: #1f2937;
+}
+
+.upload-area p {
+    margin: 5px 0;
+    color: #6b7280;
+}
+
+.supported-formats {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* =========================
+   Selected File
+========================= */
+
+.selected-file {
+    margin-top: 18px;
+    padding: 12px 15px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.button-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.detect-button,
+.clear-button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.detect-button {
+    background: #2563eb;
+    color: white;
+    flex: 1;
+}
+
+.detect-button:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.detect-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+.clear-button {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.clear-button:hover:not(:disabled) {
+    background: #d1d5db;
+}
+
+.clear-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* =========================
+   Error
+========================= */
+
+.error-message {
+    margin-top: 18px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 14px;
+}
+
+/* =========================
+   Results
+========================= */
+
+.results-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+
+.image-card,
+.detection-card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+.image-card h2,
+.detection-card h2 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: #1f2937;
+}
+
+/* =========================
+   Image
+========================= */
+
+.image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    display: block;
+}
+
+/* =========================
+   Detection List
+========================= */
+
+.detection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detection-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.detection-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1f2937;
+    margin-bottom: 15px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.detection-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detection-details div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.detection-details span {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.detection-details strong {
+    color: #1f2937;
+    font-size: 14px;
+}
+
+/* =========================
+   No Detection
+========================= */
+
+.no-detection {
+    text-align: center;
+    padding: 40px 10px;
+    color: #6b7280;
+}
+
+.no-detection-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.no-detection p {
+    margin: 0;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+    .results-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .number-plate-page {
+        padding: 20px 10px;
+    }
+
+    .upload-card,
+    .image-card,
+    .detection-card {
+        padding: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 26px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .clear-button {
+        width: 100%;
+    }
+}

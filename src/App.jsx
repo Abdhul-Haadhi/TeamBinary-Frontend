@@ -5,10 +5,13 @@ import Dashboard from "./pages/Dashboard";
 import InvestigatorDashboard from "./pages/InvestigatorDashboard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Cameras from "./pages/Cameras";
 import AdminLayout from "./components/AdminLayout";
 import Investigators from "./pages/Investigators";
 import Report from "./pages/Report";
+import VehicleClassification from "./pages/VehicleClassification";
+import NumberPlateDetection from "./pages/NumberPlateDetection";
+import VehicleSearch from "./pages/VehicleSearch";
+import RegisteredCameras from "./pages/RegisteredCameras";
 
 function App() {
   return (
@@ -25,9 +28,12 @@ function App() {
         }
       >
         <Route path="/admin-dashboard" element={<Dashboard />} />
-        <Route path="/camera-management" element={<Cameras />} />
+        <Route path="/registered-cameras" element={<RegisteredCameras />} />
+        <Route path="/vehicle-classification" element={<VehicleClassification />} />
+        <Route path="/number-plate" element={<NumberPlateDetection />} />
         <Route path="/investigator-management" element={<Investigators />} />
         <Route path="/reports" element={<Report />} />
+        <Route path="/vehicle-search" element={<VehicleSearch />} />
         {/* More admin pages */}
       </Route>
 

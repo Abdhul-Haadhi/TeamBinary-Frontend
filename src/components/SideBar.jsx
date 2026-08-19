@@ -19,8 +19,16 @@ const SideBar = ({ isOpen }) => {
           📊 Dashboard
         </NavLink>
 
-        <NavLink to="/camera-management" className="sidebar-link">
-          📷 Camera Management
+        <NavLink to="/registered-cameras" className="sidebar-link">
+          📷 Registered Cameras
+        </NavLink>
+
+        <NavLink to="/vehicle-classification" className="sidebar-link">
+          🚗 Vehicle Classification
+        </NavLink>
+
+        <NavLink to="/number-plate" className="sidebar-link">
+          🚗 Number plate detection
         </NavLink>
 
         <NavLink to="/investigator-management" className="sidebar-link">
