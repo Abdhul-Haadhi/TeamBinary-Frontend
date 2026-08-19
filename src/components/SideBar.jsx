@@ -19,6 +19,10 @@ const SideBar = ({ isOpen }) => {
           📊 Dashboard
         </NavLink>
 
+        <NavLink to="/camera-management" className="sidebar-link">
+          📷 Camera Management
+        </NavLink>
+
         <NavLink to="/registered-cameras" className="sidebar-link">
           📷 Registered Cameras
         </NavLink>

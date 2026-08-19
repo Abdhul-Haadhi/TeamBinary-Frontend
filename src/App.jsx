@@ -6,6 +6,7 @@ import InvestigatorDashboard from "./pages/InvestigatorDashboard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
+import Cameras from "./pages/Cameras";
 import Investigators from "./pages/Investigators";
 import Report from "./pages/Report";
 import VehicleClassification from "./pages/VehicleClassification";
@@ -28,6 +29,7 @@ function App() {
         }
       >
         <Route path="/admin-dashboard" element={<Dashboard />} />
+        <Route path="/camera-management" element={<Cameras />} />
         <Route path="/registered-cameras" element={<RegisteredCameras />} />
         <Route path="/vehicle-classification" element={<VehicleClassification />} />
         <Route path="/number-plate" element={<NumberPlateDetection />} />
