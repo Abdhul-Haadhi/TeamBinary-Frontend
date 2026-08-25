@@ -22,7 +22,7 @@ const NavBar = ({ title = "Dashboard", toggleSidebar }) => {
 
                 <h2 className="logo">AutoTrace</h2>
 
-                <span className="page-title">{title}</span>
+                {/* <span className="page-title">{title}</span> */}
             </div>
 
             {/* Right Side */}

@@ -9,9 +9,9 @@ const SideBar = ({ isOpen }) => {
   return (
     <aside className={`sidebar ${isOpen ? "open" : "closed"}`}>
 
-      <div className="sidebar-header">
+      {/* <div className="sidebar-header">
         <h2>AutoTrace</h2>
-      </div>
+      </div> */}
 
       <nav>
 

@@ -83,7 +83,7 @@ const RegisteredCameras = () => {
 
         try {
             const response = await fetch(
-                "http://localhost:8080/api/cameras",
+                "http://localhost:8080/api/camerass",
                 {
                     method: "POST",
                     headers: {
@@ -146,7 +146,7 @@ const RegisteredCameras = () => {
         try {
 
             const response = await fetch(
-                `http://localhost:8080/api/cameras/${cameraId}`,
+                `http://localhost:8080/api/camerass/${cameraId}`,
                 {
                     method: "DELETE",
                 }
@@ -206,7 +206,7 @@ const RegisteredCameras = () => {
         try {
 
             const response = await fetch(
-                `http://localhost:8080/api/cameras/${camera.id}/footage`
+                `http://localhost:8080/api/camerass/${camera.id}/footage`
             );
 
 
@@ -309,7 +309,7 @@ const RegisteredCameras = () => {
 
 
             const response = await fetch(
-                `http://localhost:8080/api/cameras/${selectedCamera.id}/footage`,
+                `http://localhost:8080/api/camerass/${selectedCamera.id}/footage`,
                 {
                     method: "POST",
                     body: formData,
@@ -404,7 +404,7 @@ const RegisteredCameras = () => {
 
 
             const response = await fetch(
-                `http://localhost:8080/api/cameras/footage/${footageId}/process`,
+                `http://localhost:8080/api/camerass/footage/${footageId}/process`,
                 {
                     method: "POST",
                 }
@@ -499,7 +499,7 @@ const RegisteredCameras = () => {
         try {
 
             const response = await fetch(
-                `http://localhost:8080/api/cameras/footage/${videoId}`,
+                `http://localhost:8080/api/camerass/footage/${videoId}`,
                 {
                     method: "DELETE",
                 }
@@ -577,7 +577,7 @@ const RegisteredCameras = () => {
                     </span>
 
                     <h1>
-                        Camera Management
+                        Registered Cameras
                     </h1>
 
                     <p>
@@ -587,13 +587,13 @@ const RegisteredCameras = () => {
                     </p>
                 </div>
 
-                <button
+                {/* <button
                     className="add-camera-button"
                     onClick={() => setShowAddCamera(true)}
                 >
                     <span className="button-icon">+</span>
                     Add Camera
-                </button>
+                </button> */}
 
             </div>
 

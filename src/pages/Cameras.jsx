@@ -4,36 +4,37 @@ import {
   X, Check, Eye, MapPin, Network, ChevronDown,
 } from "lucide-react";
 
+
 // ── Backend Base URL ───────────────────────────────────────────────────────────
 const API_BASE = "http://localhost:8080/api";
 
 // ── Status Config ──────────────────────────────────────────────────────────────
 const STATUS_CFG = {
-  ACTIVE:   { dot: "bg-green-400",  badge: "text-green-400 border-green-500/40 bg-green-500/10",    label: "Active",   pulse: true  },
+  ACTIVE: { dot: "bg-green-400", badge: "text-green-400 border-green-500/40 bg-green-500/10", label: "Active", pulse: true },
   INACTIVE: { dot: "bg-yellow-400", badge: "text-yellow-400 border-yellow-500/40 bg-yellow-500/10", label: "Inactive", pulse: false },
-  OFFLINE:  { dot: "bg-red-400",    badge: "text-red-400 border-red-500/40 bg-red-500/10",           label: "Offline",  pulse: false },
+  OFFLINE: { dot: "bg-red-400", badge: "text-red-400 border-red-500/40 bg-red-500/10", label: "Offline", pulse: false },
 };
 
 const ALL_STATUSES = ["ACTIVE", "INACTIVE", "OFFLINE"];
-const EMPTY_FORM   = { ip: "", location: "", networkId: "", status: "ACTIVE" };
-const isValidIP    = (v) => /^(\d{1,3}\.){3}\d{1,3}$/.test(v);
-const padId        = (n) => String(n).padStart(3, "0");
+const EMPTY_FORM = { ip: "", location: "", networkId: "", status: "ACTIVE" };
+const isValidIP = (v) => /^(\d{1,3}\.){3}\d{1,3}$/.test(v);
+const padId = (n) => String(n).padStart(3, "0");
 
 // ── Backend response → frontend shape mappers ──────────────────────────────────
 const mapCamera = (c) => ({
-  id:          c.cameraId,
-  ip:          c.ipAddress,
-  location:    c.location,
-  status:      c.status,
-  networkId:   c.networkId,
+  id: c.cameraId,
+  ip: c.ipAddress,
+  location: c.location,
+  status: c.status,
+  networkId: c.networkId,
   networkName: c.networkName ?? "Unassigned",
 });
 
 const mapNetwork = (n) => ({
-  id:            n.networkId,
-  name:          n.networkName,
-  status:        n.status,
-  totalCameras:  n.totalCameras,
+  id: n.networkId,
+  name: n.networkName,
+  status: n.status,
+  totalCameras: n.totalCameras,
   activeCameras: n.activeCameras,
 });
 
@@ -75,7 +76,7 @@ function StatusDropdown({ currentStatus, onSelect, disabled }) {
         <div className="absolute left-0 top-full mt-1.5 z-30 bg-gray-800
                         border border-gray-700 rounded-xl shadow-2xl overflow-hidden w-36">
           {ALL_STATUSES.map((s) => {
-            const c       = STATUS_CFG[s];
+            const c = STATUS_CFG[s];
             const current = s === currentStatus;
             return (
               <button
@@ -181,35 +182,35 @@ function Spinner() {
 export default function CameraManagement() {
 
   // ── Data state ─────────────────────────────────────────────────────────────
-  const [cameras,  setCameras]  = useState([]);
+  const [cameras, setCameras] = useState([]);
   const [networks, setNetworks] = useState([]);
-  const [loading,  setLoading]  = useState(true);
+  const [loading, setLoading] = useState(true);
 
   // ── Filter state ───────────────────────────────────────────────────────────
-  const [search,       setSearch]       = useState("");
+  const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [netFilter,    setNetFilter]    = useState("ALL");
+  const [netFilter, setNetFilter] = useState("ALL");
 
   // ── Modal state ────────────────────────────────────────────────────────────
-  const [addOpen,       setAddOpen]       = useState(false);
-  const [netOpen,       setNetOpen]       = useState(false);
-  const [deleteOpen,    setDeleteOpen]    = useState(false);
-  const [detailOpen,    setDetailOpen]    = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [netOpen, setNetOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [netStatusOpen, setNetStatusOpen] = useState(false);
   const [netDeleteOpen, setNetDeleteOpen] = useState(false);
-  const [activeCam,     setActiveCam]     = useState(null);
-  const [activeNet,     setActiveNet]     = useState(null);
-  const [deleteNet,     setDeleteNet]     = useState(null);
+  const [activeCam, setActiveCam] = useState(null);
+  const [activeNet, setActiveNet] = useState(null);
+  const [deleteNet, setDeleteNet] = useState(null);
 
   // ── Form state ─────────────────────────────────────────────────────────────
-  const [form,    setForm]    = useState(EMPTY_FORM);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [formErr, setFormErr] = useState({});
   const [netName, setNetName] = useState("");
-  const [netErr,  setNetErr]  = useState("");
-  const [saving,  setSaving]  = useState(false);
+  const [netErr, setNetErr] = useState("");
+  const [saving, setSaving] = useState(false);
 
   // ── Toast ──────────────────────────────────────────────────────────────────
-  const [toast,      setToast]      = useState(null);
+  const [toast, setToast] = useState(null);
   const [toastError, setToastError] = useState(false);
 
   const showToast = (msg, isError = false) => {
@@ -222,13 +223,13 @@ export default function CameraManagement() {
   // API helpers
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const fetchCameras = useCallback(async () => {
-    const res  = await fetch(`${API_BASE}/cameras`);
+    const res = await fetch(`${API_BASE}/cameras`);
     const data = await res.json();
     setCameras(data.map(mapCamera));
   }, []);
 
   const fetchNetworks = useCallback(async () => {
-    const res  = await fetch(`${API_BASE}/networks`);
+    const res = await fetch(`${API_BASE}/networks`);
     const data = await res.json();
     setNetworks(data.map(mapNetwork));
   }, []);
@@ -260,7 +261,7 @@ export default function CameraManagement() {
     return (
       (c.ip.includes(q) || c.location.toLowerCase().includes(q)) &&
       (statusFilter === "ALL" || c.status === statusFilter) &&
-      (netFilter    === "ALL" || String(c.networkId) === netFilter)
+      (netFilter === "ALL" || String(c.networkId) === netFilter)
     );
   });
 
@@ -273,10 +274,10 @@ export default function CameraManagement() {
   // Validate form before sending to backend
   const validateForm = () => {
     const e = {};
-    if (!form.ip)                 e.ip        = "IP address is required";
-    else if (!isValidIP(form.ip)) e.ip        = "Invalid IP address format";
-    if (!form.location.trim())    e.location  = "Location is required";
-    if (!form.networkId)          e.networkId = "Please select a network";
+    if (!form.ip) e.ip = "IP address is required";
+    else if (!isValidIP(form.ip)) e.ip = "Invalid IP address format";
+    if (!form.location.trim()) e.location = "Location is required";
+    if (!form.networkId) e.networkId = "Please select a network";
     setFormErr(e);
     return Object.keys(e).length === 0;
   };
@@ -287,13 +288,13 @@ export default function CameraManagement() {
     setSaving(true);
     try {
       const res = await fetch(`${API_BASE}/cameras`, {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ipAddress:  form.ip.trim(),
-          location:   form.location.trim(),
-          networkId:  parseInt(form.networkId),
-          status:     form.status,
+          ipAddress: form.ip.trim(),
+          location: form.location.trim(),
+          networkId: parseInt(form.networkId),
+          status: form.status,
         }),
       });
 
@@ -319,7 +320,7 @@ export default function CameraManagement() {
   const handleCameraStatusChange = async (camId, newStatus) => {
     try {
       const res = await fetch(`${API_BASE}/cameras/${camId}/status`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -367,7 +368,7 @@ export default function CameraManagement() {
     setSaving(true);
     try {
       const res = await fetch(`${API_BASE}/networks/add-network`, {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ networkName: netName.trim(), status: "ACTIVE" }),
       });
@@ -394,7 +395,7 @@ export default function CameraManagement() {
   const handleNetworkStatusChange = async (newStatus) => {
     try {
       const res = await fetch(`${API_BASE}/networks/${activeNet.id}/status`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -435,24 +436,28 @@ export default function CameraManagement() {
   };
 
   // ── Open / close helpers ───────────────────────────────────────────────────
-  const openDetail     = (cam) => { setActiveCam(cam); setDetailOpen(true); };
-  const openDelete     = (cam) => { setActiveCam(cam); setDeleteOpen(true); };
-  const openNetStatus  = (net) => { setActiveNet(net); setNetStatusOpen(true); };
-  const openNetDelete  = (net) => { setDeleteNet(net); setNetDeleteOpen(true); };
+  const openDetail = (cam) => { setActiveCam(cam); setDetailOpen(true); };
+  const openDelete = (cam) => { setActiveCam(cam); setDeleteOpen(true); };
+  const openNetStatus = (net) => { setActiveNet(net); setNetStatusOpen(true); };
+  const openNetDelete = (net) => { setDeleteNet(net); setNetDeleteOpen(true); };
 
-  const closeAdd       = () => { setAddOpen(false);       setForm(EMPTY_FORM); setFormErr({}); };
-  const closeNet       = () => { setNetOpen(false);       setNetName(""); setNetErr(""); };
-  const closeDetail    = () => { setDetailOpen(false);    setActiveCam(null); };
-  const closeDelete    = () => { setDeleteOpen(false);    setActiveCam(null); };
-  const closeNetSt     = () => { setNetStatusOpen(false); setActiveNet(null); };
+  const closeAdd = () => { setAddOpen(false); setForm(EMPTY_FORM); setFormErr({}); };
+  const closeNet = () => { setNetOpen(false); setNetName(""); setNetErr(""); };
+  const closeDetail = () => { setDetailOpen(false); setActiveCam(null); };
+  const closeDelete = () => { setDeleteOpen(false); setActiveCam(null); };
+  const closeNetSt = () => { setNetStatusOpen(false); setActiveNet(null); };
   const closeNetDelete = () => { setNetDeleteOpen(false); setDeleteNet(null); };
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // Render
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   return (
-    <div className="min-h-screen bg-white-950 text-gray p-6"
-         style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-white-950 text-gray-100 p-6"
+      style={{
+        fontFamily: "Inter, system-ui, sans-serif",
+      }}
+    >
 
       {/* ── Toast ── */}
       {toast && (
@@ -477,10 +482,10 @@ export default function CameraManagement() {
 
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-4 gap-4 mb-7">
-        <StatCard label="Total Cameras" value={cameras.length}            colorClass="text-blue-400"   bgClass="bg-blue-500/10"   borderClass="border-blue-500/30" />
-        <StatCard label="Active"        value={countByStatus("ACTIVE")}   colorClass="text-green-400"  bgClass="bg-green-500/10"  borderClass="border-green-500/30" />
-        <StatCard label="Inactive"      value={countByStatus("INACTIVE")} colorClass="text-yellow-400" bgClass="bg-yellow-500/10" borderClass="border-yellow-500/30" />
-        <StatCard label="Offline"       value={countByStatus("OFFLINE")}  colorClass="text-red-400"    bgClass="bg-red-500/10"    borderClass="border-red-500/30" />
+        <StatCard label="Total Cameras" value={cameras.length} colorClass="text-blue-400" bgClass="bg-blue-500/10" borderClass="border-blue-500/30" />
+        <StatCard label="Active" value={countByStatus("ACTIVE")} colorClass="text-green-400" bgClass="bg-green-500/10" borderClass="border-green-500/30" />
+        <StatCard label="Inactive" value={countByStatus("INACTIVE")} colorClass="text-yellow-400" bgClass="bg-yellow-500/10" borderClass="border-yellow-500/30" />
+        <StatCard label="Offline" value={countByStatus("OFFLINE")} colorClass="text-red-400" bgClass="bg-red-500/10" borderClass="border-red-500/30" />
       </div>
 
       {/* ── Controls ── */}
@@ -555,7 +560,7 @@ export default function CameraManagement() {
                   </tr>
                 ) : filtered.map((cam, i) => (
                   <tr key={cam.id}
-                      className={`border-b border-gray-800/40 hover:bg-gray-800/30 transition-colors
+                    className={`border-b border-gray-800/40 hover:bg-gray-800/30 transition-colors
                                   ${i % 2 ? "bg-gray-800/10" : ""}`}>
 
                     <td className="px-5 py-4">
@@ -624,10 +629,10 @@ export default function CameraManagement() {
 
         {loading ? <Spinner /> : (
           <div className="grid gap-3"
-               style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
             {networks.map((net) => (
               <div key={net.id}
-                   className="bg-gray-900 border border-gray-800 hover:border-blue-500/50
+                className="bg-gray-900 border border-gray-800 hover:border-blue-500/50
                               rounded-xl p-4 transition-colors">
 
                 <div className="flex items-start justify-between mb-3">
@@ -754,12 +759,12 @@ export default function CameraManagement() {
             <div className="p-5">
               {[
                 { label: "Camera ID", value: `CAM-${padId(activeCam.id)}`, mono: true },
-                { label: "IP Address", value: activeCam.ip,       mono: true },
-                { label: "Location",   value: activeCam.location },
-                { label: "Network",    value: activeCam.networkName },
+                { label: "IP Address", value: activeCam.ip, mono: true },
+                { label: "Location", value: activeCam.location },
+                { label: "Network", value: activeCam.networkName },
               ].map((row) => (
                 <div key={row.label}
-                     className="flex items-center justify-between py-3 border-b border-gray-800/60 last:border-0">
+                  className="flex items-center justify-between py-3 border-b border-gray-800/60 last:border-0">
                   <span className="text-xs text-gray-500 uppercase tracking-wider">{row.label}</span>
                   <span className={`text-sm font-medium text-white ${row.mono ? "font-mono" : ""}`}>
                     {row.value}
@@ -921,7 +926,7 @@ export default function CameraManagement() {
             <div className="px-5 pb-5 space-y-2">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Select New Status</p>
               {ALL_STATUSES.map((s) => {
-                const cfg     = STATUS_CFG[s];
+                const cfg = STATUS_CFG[s];
                 const current = activeNet.status === s;
                 return (
                   <button key={s} disabled={current}
