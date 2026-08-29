@@ -1,205 +1,325 @@
+/* ============================================================
+   AUTO TRACE - MAIN APPLICATION LAYOUT
+============================================================ */
+
+/* ------------------------------------------------------------
+   GLOBAL RESET
+------------------------------------------------------------ */
+
 * {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  overflow: hidden;
+}
+
+
+/* ------------------------------------------------------------
+   BODY
+------------------------------------------------------------ */
+
 body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  background: #f5f5f7;
+
+  color: #2b1720;
 }
 
-.app {
-  min-height: 100vh;
+
+/* ------------------------------------------------------------
+   ROOT APP
+------------------------------------------------------------ */
+
+#root {
+  width: 100%;
+  height: 100vh;
 }
 
-.vehicle-search-page {
-  min-height: 100vh;
+
+/* ============================================================
+   MAIN APPLICATION
+============================================================ */
+
+.app-layout {
   position: relative;
+
+  width: 100%;
+  height: 100vh;
+
+  min-height: 0;
+
   overflow: hidden;
-  background: #ffffff;
+
+  background: #f5f5f7;
 }
 
-.page-header {
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 35px;
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+
+/*
+   IMPORTANT:
+   The sidebar is fixed to the browser viewport.
+
+   This prevents the dark sidebar from moving upward
+   when Vehicle Search is scrolled.
+*/
+
+.at-sidebar {
+  position: fixed !important;
+
+  top: 0;
+  left: 0;
+
+  width: 270px;
+  min-width: 270px;
+
+  height: 100vh;
+  min-height: 100vh;
+
+  z-index: 2000;
 }
 
-.page-header h1 {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 0;
-  color: #1d1111;
+
+/* ------------------------------------------------------------
+   COLLAPSED SIDEBAR
+------------------------------------------------------------ */
+
+.at-sidebar.at-sidebar-collapsed {
+  width: 78px;
+  min-width: 78px;
 }
 
-.search-section {
-  width: 100%;
-  max-width: 900px;
-  margin: 15px auto 0;
-  text-align: center;
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+
+/*
+   ONLY THIS AREA SCROLLS.
+*/
+
+.main-content {
+  position: relative;
+
+  width: calc(100% - 270px);
+
+  height: 100vh;
+  min-height: 100vh;
+
+  margin-left: 270px;
+
+  padding: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+
+  background: #f5f5f7;
+
+  -webkit-overflow-scrolling: touch;
 }
 
-.search-section h2 {
-  margin: 0 0 45px;
-  font-size: 38px;
-  line-height: 1.08;
-  font-weight: 700;
-  color: #47290b;
+
+/* ============================================================
+   MAIN CONTENT SCROLLBAR
+============================================================ */
+
+.main-content::-webkit-scrollbar {
+  width: 7px;
 }
 
-.search-box {
-  width: 400px;
-  min-height: 105px;
-  margin: 0 auto;
-  border: 1px solid #dddddd;
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-  padding: 12px;
-}
-
-.search-box textarea {
-  width: 100%;
-  height: 48px;
-  border: none;
-  outline: none;
-  resize: none;
-  font-size: 12px;
-  color: #333;
-}
-
-.search-box textarea::placeholder {
-  color: #999;
-}
-
-.search-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.icon-button,
-.send-button {
-  border: none;
+.main-content::-webkit-scrollbar-track {
   background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.icon-button {
-  font-size: 17px;
-}
+.main-content::-webkit-scrollbar-thumb {
+  background: #d0d0d4;
 
-.send-button {
-  margin-left: auto;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #e5e5e5;
-  color: #999;
-}
-
-.send-button:hover {
-  background: #00a94f;
-  color: white;
-}
-
-.preview-container {
-  width: 400px;
-  height: 220px;
-  margin: 20px auto;
-  position: relative;
-  overflow: hidden;
   border-radius: 10px;
 }
 
-.preview-container img {
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #b8b8bd;
+}
+
+
+/* ============================================================
+   PAGE CONTAINERS
+============================================================ */
+
+.page-placeholder {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+
+  min-height: 100vh;
+
+  padding: 40px;
+
+  background: #f5f5f7;
 }
 
-.remove-image {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.65);
-  color: white;
-  cursor: pointer;
-}
-
-.loading {
-  margin-top: 20px;
-  font-size: 14px;
-}
-
-.error-message {
-  color: #d32f2f;
-  font-size: 13px;
-  margin-top: 12px;
-}
-
-.vehicle-result {
-  position: fixed;
-  right: 25px;
-  top: 360px;
-  width: 280px;
-  padding: 15px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  display: flex;
-  gap: 12px;
-  z-index: 10;
-}
-
-.vehicle-result img {
-  width: 75px;
-  height: 75px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.result-details {
-  flex: 1;
-}
-
-.result-details h3 {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin: 0 0 8px;
-  font-size: 13px;
-}
-
-.result-details p {
+.page-placeholder h1 {
   margin: 0 0 10px;
-  font-size: 12px;
+
+  color: #35101a;
+
+  font-size: 28px;
+
+  font-weight: 700;
 }
 
-.result-details button {
-  border: none;
-  background: #222;
-  color: white;
-  border-radius: 5px;
-  padding: 7px 12px;
-  cursor: pointer;
-  font-size: 11px;
+.page-placeholder p {
+  margin: 0;
+
+  color: #77777d;
+
+  font-size: 15px;
 }
 
-.close-result {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+
+/* ============================================================
+   VEHICLE SEARCH PAGE SUPPORT
+============================================================ */
+
+/*
+   If VehicleSearch has a page wrapper, these rules prevent
+   accidental horizontal scrolling.
+*/
+
+.main-content > * {
+  max-width: 100%;
+}
+
+
+/* ============================================================
+   IMAGES / MEDIA
+============================================================ */
+
+.main-content img,
+.main-content video,
+.main-content canvas {
+  max-width: 100%;
+}
+
+
+/* ============================================================
+   MOBILE / TABLET
+============================================================ */
+
+@media (max-width: 900px) {
+
+  /*
+     Sidebar remains fixed.
+  */
+
+  .at-sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+  }
+
+  .at-sidebar.at-sidebar-collapsed {
+    width: 78px !important;
+    min-width: 78px !important;
+  }
+
+
+  /*
+     Main content starts after normal sidebar width.
+  */
+
+  .main-content {
+    width: calc(100% - 250px);
+
+    margin-left: 250px;
+  }
+
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+============================================================ */
+
+@media (max-width: 650px) {
+
+  /*
+     On small screens the sidebar becomes an overlay.
+  */
+
+  .at-sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+  }
+
+  .at-sidebar.at-sidebar-collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+
+    overflow: hidden;
+  }
+
+
+  /*
+     Main content uses the full screen.
+  */
+
+  .main-content {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+}
+
+
+/* ============================================================
+   ACCESSIBILITY
+============================================================ */
+
+button {
+  font-family: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid #d2a84f;
+
+  outline-offset: 2px;
+}
+
+
+/* ============================================================
+   REMOVE DEFAULT BUTTON STYLING
+   ONLY WHERE NEEDED
+============================================================ */
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ============================================================
+   SMOOTH PAGE RENDERING
+============================================================ */
+
+.main-content {
+  contain: layout paint;
 }

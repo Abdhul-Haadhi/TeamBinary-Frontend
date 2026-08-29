@@ -1,0 +1,857 @@
+/* ============================================================
+   AUTO TRACE
+   PREMIUM DARK SIDEBAR
+   Larger / More Readable Typography
+============================================================ */
+
+.at-sidebar {
+  position: relative;
+
+  width: 270px;
+  min-width: 270px;
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  padding: 17px 13px 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #35101a 0%,
+      #260b14 48%,
+      #1f0911 100%
+    );
+
+  color: #ffffff;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  box-shadow:
+    8px 0 35px rgba(0, 0, 0, 0.18);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+
+  overflow: hidden;
+
+  transition:
+    width 0.28s ease,
+    min-width 0.28s ease;
+}
+
+
+/* ============================================================
+   COLLAPSED SIDEBAR
+============================================================ */
+
+.at-sidebar-collapsed {
+  width: 78px;
+  min-width: 78px;
+}
+
+
+/* ============================================================
+   SUBTLE BACKGROUND LIGHT
+============================================================ */
+
+.at-sidebar::before {
+  content: "";
+
+  position: absolute;
+
+  top: -180px;
+  left: -160px;
+
+  width: 350px;
+  height: 350px;
+
+  background: rgba(183, 82, 42, 0.12);
+
+  border-radius: 50%;
+
+  filter: blur(60px);
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   WINDOW DOTS
+============================================================ */
+
+.at-window-controls {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  height: 16px;
+
+  margin-left: 5px;
+
+  z-index: 2;
+}
+
+.window-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  display: block;
+}
+
+.window-dot.red {
+  background: #ef6351;
+}
+
+.window-dot.yellow {
+  background: #e5bd45;
+}
+
+.window-dot.green {
+  background: #54b957;
+}
+
+
+/* ============================================================
+   BRAND
+============================================================ */
+
+.at-brand {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 17px;
+
+  padding: 0 5px;
+
+  min-height: 58px;
+
+  z-index: 2;
+}
+
+
+/* ============================================================
+   LOGO
+============================================================ */
+
+.at-logo-wrapper {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+.at-logo {
+  width: 44px;
+  height: 44px;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+
+/* ============================================================
+   BRAND TEXT
+============================================================ */
+
+.at-brand-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.at-brand-name {
+  color: #ffffff;
+
+  font-size: 17px;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+}
+
+.at-brand-subtitle {
+  margin-top: 5px;
+
+  color: #bba9ae;
+
+  font-size: 8.5px;
+
+  line-height: 1;
+
+  font-weight: 600;
+
+  letter-spacing: 0.9px;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   PROFILE
+============================================================ */
+
+.at-profile {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin: 19px 4px 17px;
+
+  padding: 10px;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  border-radius: 12px;
+
+  z-index: 2;
+}
+
+
+/* ============================================================
+   PROFILE AVATAR
+============================================================ */
+
+.at-profile-avatar {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d8ae57,
+      #98722f
+    );
+
+  color: #301019;
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ============================================================
+   PROFILE INFO
+============================================================ */
+
+.at-profile-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.at-profile-label {
+  color: #a99299;
+
+  font-size: 8px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.7px;
+
+  white-space: nowrap;
+}
+
+.at-profile-info strong {
+  margin-top: 4px;
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   COLLAPSE BUTTON
+============================================================ */
+
+.at-collapse-button {
+  position: absolute;
+
+  top: 90px;
+  right: -1px;
+
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 50%;
+
+  background: #451520;
+
+  color: #d6b66e;
+
+  font-family: inherit;
+
+  font-size: 17px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  z-index: 10;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.at-collapse-button:hover {
+  background: #5b1d2a;
+
+  color: #ffffff;
+
+  transform: scale(1.06);
+}
+
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+.at-navigation {
+  position: relative;
+
+  flex: 1;
+
+  min-height: 0;
+
+  padding: 4px 1px;
+
+  overflow-y: auto;
+
+  overflow-x: visible;
+
+  z-index: 2;
+}
+
+
+/* ============================================================
+   SECTION TITLE
+============================================================ */
+
+.at-section-title {
+  margin: 14px 10px 9px;
+
+  color: #a58c93;
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 1px;
+
+  line-height: 1;
+}
+
+
+/* ============================================================
+   MENU
+============================================================ */
+
+.at-menu {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+/* ============================================================
+   MENU ITEM
+============================================================ */
+
+.at-menu-item {
+  position: relative;
+
+  width: 100%;
+  height: 45px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 0 12px;
+
+  border: 1px solid transparent;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #c1b0b5;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+
+
+/* ============================================================
+   MENU HOVER
+============================================================ */
+
+.at-menu-item:hover {
+  background: rgba(255, 255, 255, 0.055);
+
+  border-color: rgba(255, 255, 255, 0.045);
+
+  color: #ffffff;
+}
+
+
+/* ============================================================
+   MENU PRESS
+============================================================ */
+
+.at-menu-item:active {
+  transform: scale(0.985);
+}
+
+
+/* ============================================================
+   ACTIVE ITEM
+============================================================ */
+
+.at-menu-item-active {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.095),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border-color: rgba(255, 255, 255, 0.07);
+
+  color: #ffffff;
+
+  font-weight: 600;
+
+  box-shadow:
+    inset 0 0 20px rgba(255, 255, 255, 0.015);
+}
+
+.at-menu-item-active:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.045)
+    );
+}
+
+
+/* ============================================================
+   GOLD ACTIVE BAR
+============================================================ */
+
+.at-menu-item-active::before {
+  content: "";
+
+  position: absolute;
+
+  left: -1px;
+
+  top: 8px;
+
+  width: 3px;
+
+  height: 28px;
+
+  border-radius: 0 4px 4px 0;
+
+  background: #d2a84f;
+
+  box-shadow:
+    0 0 8px rgba(210, 168, 79, 0.45);
+}
+
+
+/* ============================================================
+   ICON
+============================================================ */
+
+.at-menu-icon {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #98838a;
+
+  font-size: 17px;
+
+  line-height: 1;
+
+  transition:
+    color 0.18s ease;
+}
+
+.at-menu-item:hover .at-menu-icon {
+  color: #d5b56b;
+}
+
+.at-menu-item-active .at-menu-icon {
+  color: #d5b56b;
+}
+
+
+/* ============================================================
+   LABEL
+============================================================ */
+
+.at-menu-label {
+  min-width: 0;
+
+  flex: 1;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* ============================================================
+   ACTIVE DOT
+============================================================ */
+
+.at-active-dot {
+  width: 5px;
+  height: 5px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #d5aa50;
+
+  box-shadow:
+    0 0 7px rgba(213, 170, 80, 0.65);
+}
+
+
+/* ============================================================
+   ADMINISTRATION
+============================================================ */
+
+.at-admin-section {
+  margin-top: 20px;
+
+  padding-top: 9px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+
+/* ============================================================
+   BOTTOM
+============================================================ */
+
+.at-sidebar-bottom {
+  position: relative;
+
+  flex-shrink: 0;
+
+  padding-top: 11px;
+
+  z-index: 2;
+}
+
+
+/* ============================================================
+   SYSTEM STATUS
+============================================================ */
+
+.at-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  height: 31px;
+
+  padding: 0 11px;
+
+  margin-bottom: 5px;
+
+  color: #a58d94;
+
+  font-size: 8px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.7px;
+}
+
+.at-status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #52bb69;
+
+  box-shadow:
+    0 0 7px rgba(82, 187, 105, 0.65);
+}
+
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+.at-logout {
+  width: 100%;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 12px;
+
+  border: 1px solid transparent;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #b29da3;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.at-logout:hover {
+  background: rgba(255, 255, 255, 0.055);
+
+  border-color: rgba(255, 255, 255, 0.05);
+
+  color: #ffffff;
+}
+
+.at-logout-icon {
+  width: 24px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #d0a34d;
+
+  font-size: 17px;
+}
+
+
+/* ============================================================
+   COLLAPSED MODE
+============================================================ */
+
+.at-sidebar-collapsed .at-window-controls {
+  justify-content: center;
+
+  margin-left: 0;
+}
+
+.at-sidebar-collapsed .at-brand {
+  justify-content: center;
+
+  padding: 0;
+}
+
+.at-sidebar-collapsed .at-logo-wrapper {
+  width: 48px;
+  height: 48px;
+}
+
+.at-sidebar-collapsed .at-logo {
+  width: 42px;
+  height: 42px;
+}
+
+.at-sidebar-collapsed .at-navigation {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.at-sidebar-collapsed .at-menu-item {
+  justify-content: center;
+
+  gap: 0;
+
+  padding: 0;
+}
+
+.at-sidebar-collapsed .at-menu-icon {
+  width: 32px;
+  height: 32px;
+
+  font-size: 18px;
+}
+
+.at-sidebar-collapsed .at-sidebar-bottom {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.at-sidebar-collapsed .at-logout {
+  justify-content: center;
+
+  padding: 0;
+}
+
+.at-sidebar-collapsed .at-collapse-button {
+  right: -1px;
+}
+
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+
+.at-navigation::-webkit-scrollbar {
+  width: 3px;
+}
+
+.at-navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.at-navigation::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+
+  border-radius: 10px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 900px) {
+
+  .at-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    height: 100vh;
+
+    z-index: 2000;
+  }
+
+}
