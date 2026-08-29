@@ -33,7 +33,7 @@ const Dashboard = () => {
       title: "Number Plate Detection",
       icon: "🔢",
       path: "/number-plate",
-      description: "Real-time automatic license plate recognition (ALPR) and detection alerts.",
+      description: "Real-time automatic Number plate recognition (ANPR) and detection alerts.",
       theme: "theme-plate",
       badgeText: "ANPR Engine"
     },

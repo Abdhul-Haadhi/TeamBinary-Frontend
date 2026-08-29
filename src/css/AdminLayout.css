@@ -1,0 +1,62 @@
+/* =========================================================
+   AUTOTRACE APPLICATION SHELL
+========================================================= */
+
+.app-shell {
+    min-height: 100vh;
+
+    background:
+        #f6f8fc;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.app-main {
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding-top: 72px;
+
+    margin-left: 265px;
+
+    transition:
+        margin-left 0.28s ease;
+}
+
+
+.app-main.sidebar-closed {
+    margin-left: 78px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .app-main {
+        margin-left: 235px;
+    }
+
+    .app-main.sidebar-closed {
+        margin-left: 70px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .app-main,
+    .app-main.sidebar-closed {
+        margin-left: 0;
+
+        padding-top: 64px;
+    }
+
+}
