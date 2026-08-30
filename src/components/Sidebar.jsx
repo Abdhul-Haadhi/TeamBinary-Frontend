@@ -62,11 +62,11 @@ const SideBar = ({
       icon: LayoutDashboard,
     },
 
-    // {
-    //   path: "/vehicle-classification",
-    //   label: "Vehicle Classification",
-    //   icon: Car,
-    // },
+    {
+      path: "/vehicle-classification",
+      label: "Vehicle Classification",
+      icon: Car,
+    },
 
     {
       path: "/number-plate",
@@ -89,6 +89,7 @@ const SideBar = ({
   ];
 
 
+  // =========================================================
   // ADMIN-ONLY MENU
   // =========================================================
 
