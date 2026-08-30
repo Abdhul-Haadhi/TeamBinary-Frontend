@@ -1,0 +1,755 @@
+/* =========================================================
+   CCTV PAGE
+========================================================= */
+
+.cctv-page {
+  min-height: 100vh;
+  padding: 32px 36px 50px;
+  background: #f6f7f9;
+  color: #17191d;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.cctv-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.cctv-eyebrow,
+.location-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #8b919a;
+  margin-bottom: 8px;
+}
+
+.cctv-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.7px;
+}
+
+.cctv-header p {
+  margin: 8px 0 0;
+  color: #858b94;
+  font-size: 15px;
+}
+
+.cctv-network-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #27ae60;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.cctv-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.summary-card {
+  background: white;
+  border: 1px solid #e7e9ed;
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+
+.summary-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  color: #999fa8;
+  margin-bottom: 9px;
+}
+
+.summary-card strong {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 3px;
+}
+
+.summary-small {
+  color: #9a9fa7;
+  font-size: 12px;
+}
+
+.green-text {
+  color: #27ae60;
+}
+
+
+/* =========================================================
+   CAMERA SECTION
+========================================================= */
+
+.camera-section {
+  background: white;
+  border: 1px solid #e6e8ec;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.section-header p {
+  margin: 5px 0 0;
+  color: #9298a0;
+  font-size: 13px;
+}
+
+.camera-count {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #8e949d;
+}
+
+
+/* =========================================================
+   CAMERA CARD
+========================================================= */
+
+.camera-card {
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   VIDEO
+========================================================= */
+
+.camera-video {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: #111;
+  overflow: hidden;
+}
+
+.camera-video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.live-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.72);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.live-badge span {
+  width: 7px;
+  height: 7px;
+  background: #ff3b30;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.12);
+}
+
+.camera-id {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  padding: 7px 10px;
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   CAMERA INFO
+========================================================= */
+
+.camera-info {
+  padding: 20px;
+}
+
+.camera-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.camera-title h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.camera-title p {
+  margin: 5px 0 0;
+  color: #9298a0;
+  font-size: 13px;
+}
+
+.online-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #27ae60;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.online-status span {
+  width: 8px;
+  height: 8px;
+  background: #27ae60;
+  border-radius: 50%;
+}
+
+
+/* =========================================================
+   CAMERA DETAILS
+========================================================= */
+
+.camera-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.camera-details div {
+  padding: 12px;
+  background: white;
+  border: 1px solid #e7e9ed;
+  border-radius: 10px;
+}
+
+.camera-details span {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #a0a5ad;
+  margin-bottom: 5px;
+}
+
+.camera-details strong {
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   LOCATION SECTION
+========================================================= */
+
+.location-section {
+  background: white;
+  border: 1px solid #e6e8ec;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.location-header h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.location-header p {
+  margin: 5px 0 0;
+  color: #9298a0;
+  font-size: 13px;
+}
+
+.location-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 20px;
+  background: #f2f3f5;
+  color: #9298a0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.location-status span {
+  width: 7px;
+  height: 7px;
+  background: #a5a9af;
+  border-radius: 50%;
+}
+
+.location-status.location-live {
+  color: #27ae60;
+  background: #eef9f2;
+}
+
+.location-status.location-live span {
+  background: #27ae60;
+  box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+}
+
+
+/* =========================================================
+   LOCATION CONTENT
+========================================================= */
+
+.location-content {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 20px;
+}
+
+
+/* =========================================================
+   REAL MAP
+========================================================= */
+
+.map-container {
+  height: 380px;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #e1e4e8;
+  background: #eef0ed;
+}
+
+.real-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.real-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.map-camera-label {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(220, 223, 220, 0.95);
+  border-radius: 11px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.1);
+}
+
+.map-camera-label strong {
+  font-size: 12px;
+}
+
+.map-camera-label span {
+  font-size: 10px;
+  color: #9298a0;
+  font-family: monospace;
+}
+
+
+/* =========================================================
+   MAP LOADING
+========================================================= */
+
+.map-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.map-loading-icon {
+  font-size: 35px;
+  color: #9ba1a8;
+}
+
+.map-loading strong {
+  font-size: 14px;
+}
+
+.map-loading span {
+  max-width: 250px;
+  color: #9298a0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   LOCATION DATA
+========================================================= */
+
+.location-data {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fafafa;
+}
+
+.location-data-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.location-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eef9f2;
+  color: #27ae60;
+  font-size: 23px;
+}
+
+.location-data-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.location-data-header p {
+  margin: 4px 0 0;
+  color: #9298a0;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   COORDINATES
+========================================================= */
+
+.coordinates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.coordinate-box {
+  padding: 13px;
+  background: white;
+  border: 1px solid #e4e6e9;
+  border-radius: 10px;
+}
+
+.coordinate-box span,
+.location-metadata span {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #a0a5ad;
+  margin-bottom: 6px;
+}
+
+.coordinate-box strong {
+  font-size: 13px;
+  font-family: monospace;
+}
+
+
+/* =========================================================
+   LOCATION METADATA
+========================================================= */
+
+.location-metadata {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.location-metadata div {
+  padding: 12px;
+  background: white;
+  border: 1px solid #e4e6e9;
+  border-radius: 10px;
+}
+
+.location-metadata strong {
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   SERVER STATUS
+========================================================= */
+
+.location-server-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e4e6e9;
+  border-radius: 10px;
+}
+
+.server-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  background: #27ae60;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+}
+
+.location-server-status div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.location-server-status strong {
+  font-size: 11px;
+}
+
+.location-server-status small {
+  color: #9298a0;
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   LOCATION ERROR
+========================================================= */
+
+.location-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #fff3f1;
+  color: #c0392b;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.map-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #dfe2e6;
+  border-radius: 10px;
+  background: white;
+  color: #24272b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.map-button:hover:not(:disabled) {
+  background: #f1f2f4;
+  border-color: #d5d8dc;
+}
+
+.map-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.map-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-arrow {
+  margin-left: auto;
+  font-size: 15px;
+}
+
+.secondary-map-button {
+  background: #f7f8f9;
+}
+
+
+/* =========================================================
+   FUTURE CAMERAS
+========================================================= */
+
+.future-cameras {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  background: white;
+  border: 1px dashed #d9dce1;
+  border-radius: 16px;
+}
+
+.future-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: #f0f1f3;
+  color: #7e848c;
+  font-size: 22px;
+}
+
+.future-cameras h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.future-cameras p {
+  margin: 4px 0 0;
+  color: #9399a1;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .cctv-page {
+    padding: 22px;
+  }
+
+  .cctv-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cctv-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .location-content {
+    grid-template-columns: 1fr;
+  }
+
+  .camera-video {
+    height: 320px;
+  }
+
+  .map-container {
+    height: 320px;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .cctv-page {
+    padding: 16px;
+  }
+
+  .cctv-header h1 {
+    font-size: 26px;
+  }
+
+  .camera-details,
+  .coordinates,
+  .location-metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .camera-video {
+    height: 250px;
+  }
+
+  .map-container {
+    height: 280px;
+  }
+
+  .location-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .location-status {
+    align-self: flex-start;
+  }
+}

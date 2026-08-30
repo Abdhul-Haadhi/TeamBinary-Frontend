@@ -17,13 +17,14 @@
     box-sizing: border-box;
 
     background:
-        linear-gradient(180deg,
-            #0f172a 0%,
-            #111827 48%,
-            #0b1220 100%);
+    linear-gradient(
+      180deg,
+      #35101a 0%,
+      #260b14 48%,
+      #1f0911 100%
+    );
 
-    border-right:
-        1px solid rgba(148, 163, 184, 0.12);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
 
     color: #ffffff;
 
@@ -60,7 +61,7 @@
     padding:
         0 7px 11px;
 
-    color: #64748b;
+    color: #f8f0d9;
 
     font-size: 8px;
 
@@ -119,13 +120,13 @@
         9px;
 
     border:
-        1px solid rgba(96, 165, 250, 0.12);
+        1px solid rgba(250, 237, 96, 0.12);
 
     border-radius: 11px;
 
     background:
         linear-gradient(135deg,
-            rgba(37, 99, 235, 0.11),
+            rgba(235, 215, 37, 0.11),
             rgba(59, 130, 246, 0.025));
 
     white-space: nowrap;
@@ -147,9 +148,9 @@
     border-radius: 9px;
 
     background:
-        rgba(37, 99, 235, 0.16);
+        rgba(235, 176, 37, 0.16);
 
-    color: #60a5fa;
+    color: #face60;
 }
 
 
@@ -163,7 +164,7 @@
 
 
 .sidebar-role-info span {
-    color: #64748b;
+    color: #8b8364;
 
     font-size: 8px;
 
@@ -178,7 +179,7 @@
 .sidebar-role-info strong {
     margin-top: 3px;
 
-    color: #dbeafe;
+    color: #fbf8e8;
 
     font-size: 11px;
 
@@ -213,7 +214,7 @@
 
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-    background: #334155;
+    background: #554633;
 
     border-radius: 10px;
 }
@@ -223,7 +224,7 @@
     padding:
         9px 10px 8px;
 
-    color: #475569;
+    color: #d3d7dd;
 
     font-size: 8px;
 
@@ -283,7 +284,7 @@
 
 
 .sidebar-link:hover {
-    color: #e2e8f0;
+    color: #efe480;
 
     background:
         rgba(255, 255, 255, 0.04);
@@ -301,7 +302,7 @@
 
     background:
         linear-gradient(90deg,
-            rgba(37, 99, 235, 0.18),
+            rgba(235, 172, 37, 0.18),
             rgba(37, 99, 235, 0.06));
 
     border-color:
@@ -330,7 +331,7 @@
 
 
 .sidebar-link:hover .sidebar-link-icon {
-    color: #60a5fa;
+    color: #fabc60;
 
     background:
         rgba(59, 130, 246, 0.08);
@@ -338,7 +339,7 @@
 
 
 .sidebar-link.active .sidebar-link-icon {
-    color: #60a5fa;
+    color: #fabc60;
 
     background:
         rgba(59, 130, 246, 0.12);
@@ -378,7 +379,7 @@
     border-radius:
         4px 0 0 4px;
 
-    background: #60a5fa;
+    background: #fade60;
 
     opacity: 0;
 
@@ -427,7 +428,7 @@
     padding:
         7px 8px;
 
-    color: #475569;
+    color: #696547;
 
     white-space: nowrap;
 }
@@ -436,7 +437,7 @@
 .sidebar-security>svg {
     flex-shrink: 0;
 
-    color: #475569;
+    color: #cbbb61;
 }
 
 
@@ -448,20 +449,20 @@
 
 
 .sidebar-security span {
-    font-size: 9px;
+    font-size: 11px;
 
     font-weight: 700;
 
-    color: #64748b;
+    color: #868272;
 }
 
 
 .sidebar-security small {
     margin-top: 2px;
 
-    font-size: 7px;
+    font-size: 9px;
 
-    color: #475569;
+    color: #b9c4d3;
 }
 
 
@@ -492,9 +493,9 @@
     background:
         rgba(255, 255, 255, 0.025);
 
-    color: #64748b;
+    color: #8b8564;
 
-    font-size: 10px;
+    font-size: 11px;
 
     font-weight: 700;
 
@@ -508,7 +509,7 @@
 
 
 .sidebar-collapse-btn:hover {
-    color: #cbd5e1;
+    color: #e1decb;
 
     background:
         rgba(255, 255, 255, 0.05);

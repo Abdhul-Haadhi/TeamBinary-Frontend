@@ -308,7 +308,7 @@ const NavBar = ({
 
                 {/* Notification */}
 
-                <button
+                {/* <button
                     className="notification-btn"
                     title="Notifications"
                     aria-label="Notifications"
@@ -318,7 +318,7 @@ const NavBar = ({
 
                     <span className="notification-dot"></span>
 
-                </button>
+                </button> */}
 
 
                 {/* Vertical divider */}

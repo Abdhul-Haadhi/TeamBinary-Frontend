@@ -32,8 +32,8 @@ import AdminLayout
 import Dashboard
   from "./pages/Dashboard";
 
-import Cameras
-  from "./pages/Cameras";
+import CCTVManagement 
+  from "./pages/CCTVManagement";
 
 import RegisteredCameras
   from "./pages/RegisteredCameras";
@@ -60,6 +60,7 @@ import VehicleSearch
 
 import OrganizationManagement
   from "./pages/OrganizationManagement";
+import ImageSearch from "./pages/imageSearch";
 
 
 function App() {
@@ -162,6 +163,14 @@ function App() {
           }
         />
 
+
+        <Route
+          path="/image-search"
+          element={
+            <ImageSearch />
+          }
+        />
+
         <Route
           path="/number-plate"
           element={
@@ -188,7 +197,7 @@ function App() {
                     ADMIN ONLY
                     ================================================= */}
 
-        <Route
+        {/* <Route
           path="/camera-management"
           element={
 
@@ -197,6 +206,25 @@ function App() {
             >
 
               <Cameras />
+
+            </ProtectedRoute>
+
+          }
+        /> */}
+
+        {/* =============================================
+            CCTV MANAGEMENT
+        ============================================= */}
+
+        <Route
+          path="/CCTV-Management"
+          element={
+
+            <ProtectedRoute
+              role="ADMIN"
+            >
+
+              <CCTVManagement />
 
             </ProtectedRoute>
 

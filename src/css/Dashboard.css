@@ -11,7 +11,7 @@
 .dashboard-title {
   font-size: 28px;
   font-weight: 700;
-  color: #818CF8;
+  color: #453d07;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -19,7 +19,7 @@
 }
 
 .dashboard-title-highlight {
-  background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+  background: #453d07;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -47,7 +47,13 @@
 }
 
 .dashboard-card {
-  background: #1E293B;
+  background:
+    linear-gradient(
+      180deg,
+      #35101a 0%,
+      #260b14 48%,
+      #1f0911 100%
+    );
   border: 1px solid #334155;
   border-radius: 16px;
   padding: 24px;
@@ -112,11 +118,11 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #0F172A;
+  background: #2a210f;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748B;
+  color: #afac1d;
   font-size: 16px;
   transition: all 0.3s ease;
 }
