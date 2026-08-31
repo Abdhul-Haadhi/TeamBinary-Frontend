@@ -6,8 +6,6 @@ const Report = () => {
 
   const cards = [
     { title: "Vehicle Detection Report", path: "/reports/vehicles" },
-    { title: "Number Plate Recognition Report", path: "/reports/plates" },
-    { title: "Vehicle Tracking Report", path: "/reports/tracking" },
     { title: "Search History Report", path: "/reports/history" },
     { title: "Camera Activity Report", path: "/reports/cameras" },
   ];
