@@ -63,22 +63,24 @@ const SideBar = ({
     },
 
     {
-      path: "/vehicle-classification",
-      label: "Vehicle Classification",
-      icon: Car,
-    },
-
-    {
-      path: "/number-plate",
-      label: "Number Plate Detection",
-      icon: ScanLine,
-    },
-
-    {
       path: "/vehicle-search",
       label: "Vehicle Search",
       icon: Search,
     },
+
+    // {
+    //   path: "/vehicle-classification",
+    //   label: "Vehicle Classification",
+    //   icon: Car,
+    // },
+
+    // {
+    //   path: "/number-plate",
+    //   label: "Number Plate Detection",
+    //   icon: ScanLine,
+    // },
+
+
 
     {
       path: "/reports",
@@ -96,7 +98,7 @@ const SideBar = ({
   const adminItems = [
 
     {
-      path: "/camera-management",
+      path: "/CCTV-Management",
       label: "Camera Management",
       icon: Camera,
     },
@@ -104,7 +106,7 @@ const SideBar = ({
     {
       path: "/registered-cameras",
       label: "Registered Cameras",
-      icon: Camera,
+      icon: Network,
     },
 
     {
@@ -112,6 +114,12 @@ const SideBar = ({
       label: "Investigator Management",
       icon: Users,
     },
+
+    // {
+    //   path: "/image-search",
+    //   label: "Image Search",
+    //   icon: Search,
+    // },
 
   ];
 
@@ -150,8 +158,8 @@ const SideBar = ({
 
     <aside
       className={`sidebar ${isOpen
-          ? "open"
-          : "closed"
+        ? "open"
+        : "closed"
         }`}
     >
 
