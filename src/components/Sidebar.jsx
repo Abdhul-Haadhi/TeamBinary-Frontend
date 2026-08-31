@@ -63,22 +63,24 @@ const SideBar = ({
     },
 
     {
-      path: "/vehicle-classification",
-      label: "Vehicle Classification",
-      icon: Car,
-    },
-
-    {
-      path: "/number-plate",
-      label: "Number Plate Detection",
-      icon: ScanLine,
-    },
-
-    {
       path: "/vehicle-search",
       label: "Vehicle Search",
       icon: Search,
     },
+
+    // {
+    //   path: "/vehicle-classification",
+    //   label: "Vehicle Classification",
+    //   icon: Car,
+    // },
+
+    // {
+    //   path: "/number-plate",
+    //   label: "Number Plate Detection",
+    //   icon: ScanLine,
+    // },
+
+
 
     {
       path: "/reports",
@@ -113,11 +115,11 @@ const SideBar = ({
       icon: Users,
     },
 
-    {
-      path: "/image-search",
-      label: "Image Search",
-      icon: Search,
-    },
+    // {
+    //   path: "/image-search",
+    //   label: "Image Search",
+    //   icon: Search,
+    // },
 
   ];
 
@@ -156,8 +158,8 @@ const SideBar = ({
 
     <aside
       className={`sidebar ${isOpen
-          ? "open"
-          : "closed"
+        ? "open"
+        : "closed"
         }`}
     >
 

@@ -16,7 +16,7 @@ const Dashboard = () => {
     {
       title: "Camera Management",
       icon: "📷",
-      path: "/camera-management",
+      path: "/CCTV-Management",
       description: "Manage camera configurations, view active feeds, and monitor network camera health.",
       theme: "theme-camera",
       badgeText: "System Feeds"
