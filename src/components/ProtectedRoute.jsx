@@ -1,16 +1,105 @@
-import { Navigate } from "react-router-dom";
 import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
 
-const ProtectedRoute = ({ children, role }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+const ProtectedRoute = ({ children, role, roles }) => {
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  const location = useLocation();
+
+  // =========================================================
+  // GET LOGGED-IN USER
+  // =========================================================
+
+  const userData =
+    localStorage.getItem("user");
+
+  const token =
+    localStorage.getItem("token");
+
+
+  let user = null;
+
+
+  try {
+
+    user =
+      userData
+        ? JSON.parse(userData)
+        : null;
+
+  } catch (error) {
+
+    console.error(
+      "Invalid user data in localStorage:",
+      error
+    );
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
   }
 
-  if (role && user.role !== role) {
-    return <Navigate to="/login" replace />;
+
+  // =========================================================
+  // CHECK LOGIN
+  // =========================================================
+
+  if (!user || !token) {
+
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          from: location.pathname
+        }}
+      />
+    );
   }
+
+
+  // =========================================================
+  // DETERMINE ALLOWED ROLES
+  // =========================================================
+
+  let allowedRoles = [];
+
+
+  if (role) {
+
+    allowedRoles = [role];
+
+  } else if (roles) {
+
+    allowedRoles = Array.isArray(roles)
+      ? roles
+      : [roles];
+
+  }
+
+
+  // =========================================================
+  // ROLE CHECK
+  // =========================================================
+
+  if (
+    allowedRoles.length > 0
+    &&
+    !allowedRoles.includes(user.role)
+  ) {
+
+    // Unauthorized user
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+
+  // =========================================================
+  // AUTHORIZED
+  // =========================================================
 
   return children;
 };

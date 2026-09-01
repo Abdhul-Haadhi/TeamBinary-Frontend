@@ -1,0 +1,794 @@
+.vehicle-search-page {
+    min-height: calc(100vh - 70px);
+    padding: 32px;
+    background: #f8fafc;
+    box-sizing: border-box;
+}
+
+.vehicle-search-container {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.vehicle-search-header {
+    margin-bottom: 25px;
+}
+
+.search-eyebrow,
+.results-eyebrow {
+    display: inline-block;
+
+    margin-bottom: 6px;
+
+    color: #2563eb;
+
+    font-size: 11px;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.vehicle-search-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 30px;
+    font-weight: 750;
+}
+
+.vehicle-search-header p {
+    max-width: 720px;
+
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   MAIN SEARCH CARD
+============================================================ */
+
+.vehicle-search-card {
+    display: grid;
+
+    grid-template-columns: 1.1fr 0.9fr;
+
+    gap: 0;
+
+    margin-bottom: 25px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.04);
+}
+
+
+/* ============================================================
+   UPLOAD SECTION
+============================================================ */
+
+.vehicle-upload-section {
+    padding: 25px;
+
+    border-right: 1px solid #e2e8f0;
+}
+
+.vehicle-upload-section h2,
+.query-information-section h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 18px;
+}
+
+.section-description {
+    margin: 6px 0 18px;
+
+    color: #64748b;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   UPLOAD AREA
+============================================================ */
+
+.vehicle-upload-area {
+    position: relative;
+
+    min-height: 285px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: 20px;
+
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    transition:
+        border 0.2s ease,
+        background 0.2s ease;
+}
+
+.vehicle-upload-area:hover {
+    border-color: #60a5fa;
+
+    background: #eff6ff;
+}
+
+.vehicle-upload-area.has-file {
+    padding: 0;
+
+    border-style: solid;
+    border-color: #bfdbfe;
+
+    background: #eff6ff;
+}
+
+.vehicle-upload-area input {
+    display: none;
+}
+
+.vehicle-upload-icon {
+    margin-bottom: 10px;
+
+    font-size: 45px;
+}
+
+.vehicle-upload-area h3 {
+    margin: 0 0 6px;
+
+    color: #334155;
+
+    font-size: 16px;
+}
+
+.vehicle-upload-area p {
+    max-width: 420px;
+
+    margin: 0 0 9px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.vehicle-upload-area>span {
+    color: #94a3b8;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.vehicle-preview {
+    width: 100%;
+    height: 285px;
+
+    object-fit: contain;
+
+    background: #0f172a;
+}
+
+
+/* ============================================================
+   SELECTED FILE
+============================================================ */
+
+.selected-search-file {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 12px;
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    background: #eff6ff;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+.selected-search-file strong {
+    min-width: 0;
+
+    color: #1e40af;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.search-button-row {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+.vehicle-search-button,
+.vehicle-clear-button {
+    min-height: 42px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.vehicle-search-button {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.vehicle-search-button:hover:not(:disabled) {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+}
+
+.vehicle-search-button:disabled {
+    background: #cbd5e1;
+
+    cursor: not-allowed;
+}
+
+.vehicle-clear-button {
+    background: #f1f5f9;
+
+    color: #475569;
+}
+
+.vehicle-clear-button:hover:not(:disabled) {
+    background: #e2e8f0;
+}
+
+.vehicle-clear-button:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.6;
+}
+
+
+/* ============================================================
+   SPINNER
+============================================================ */
+
+.spinner {
+    width: 14px;
+    height: 14px;
+
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+
+    border-radius: 50%;
+
+    animation: search-spin 0.7s linear infinite;
+}
+
+@keyframes search-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.vehicle-search-error {
+    margin-top: 13px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    background: #fff1f2;
+
+    color: #be123c;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   QUERY INFORMATION
+============================================================ */
+
+.query-information-section {
+    padding: 25px;
+
+    background: #fbfdff;
+}
+
+.query-placeholder {
+    min-height: 285px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: 25px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+.query-placeholder-icon {
+    margin-bottom: 12px;
+
+    font-size: 42px;
+}
+
+.query-placeholder h3 {
+    margin: 0 0 6px;
+
+    color: #334155;
+
+    font-size: 16px;
+}
+
+.query-placeholder p {
+    max-width: 340px;
+
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ============================================================
+   QUERY INFORMATION ITEMS
+============================================================ */
+
+.query-information {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 12px;
+}
+
+.query-info-item {
+    min-height: 105px;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    padding: 15px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+
+    background: #ffffff;
+}
+
+.query-info-item span {
+    margin-bottom: 6px;
+
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.query-info-item strong {
+    color: #0f172a;
+
+    font-size: 18px;
+}
+
+.query-info-item .query-plate {
+    color: #2563eb;
+
+    font-size: 20px;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+   RESULTS SECTION
+============================================================ */
+
+.search-results-section {
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.04);
+}
+
+.results-header {
+    margin-bottom: 20px;
+}
+
+.results-header h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 20px;
+}
+
+.results-header p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   NO RESULTS
+============================================================ */
+
+.no-search-results {
+    min-height: 260px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    border: 1px dashed #cbd5e1;
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    text-align: center;
+}
+
+.no-results-icon {
+    margin-bottom: 10px;
+
+    font-size: 42px;
+}
+
+.no-search-results h3 {
+    margin: 0 0 6px;
+
+    color: #334155;
+
+    font-size: 16px;
+}
+
+.no-search-results p {
+    max-width: 470px;
+
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   RESULT GRID
+============================================================ */
+
+.search-results-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* ============================================================
+   RESULT CARD
+============================================================ */
+
+.search-result-card {
+    padding: 18px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.search-result-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ============================================================
+   CARD HEADER
+============================================================ */
+
+.result-card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding-bottom: 14px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.result-camera-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: #eff6ff;
+
+    font-size: 19px;
+}
+
+.result-card-header h3 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 14px;
+}
+
+.result-card-header p {
+    margin: 4px 0 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   RESULT DETAILS
+============================================================ */
+
+.result-details {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    padding: 15px 0;
+}
+
+.result-detail {
+    min-width: 0;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+}
+
+.result-detail span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.result-detail strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.result-detail .result-plate {
+    color: #2563eb;
+
+    letter-spacing: 0.04em;
+}
+
+.result-detail .match-confidence {
+    color: #15803d;
+}
+
+.result-detail .video-name {
+    color: #475569;
+
+    font-size: 10px;
+}
+
+
+/* ============================================================
+   RESULT FOOTER
+============================================================ */
+
+.result-card-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #f1f5f9;
+}
+
+.match-badge {
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    background: #ecfdf5;
+
+    color: #15803d;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.view-result-button {
+    padding: 7px 11px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+.view-result-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 1000px) {
+
+    .vehicle-search-card {
+        grid-template-columns: 1fr;
+    }
+
+    .vehicle-upload-section {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .search-results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .vehicle-search-page {
+        padding: 18px;
+    }
+
+    .vehicle-search-header h1 {
+        font-size: 25px;
+    }
+
+    .query-information {
+        grid-template-columns: 1fr;
+    }
+
+    .result-details {
+        grid-template-columns: 1fr;
+    }
+
+    .search-button-row {
+        flex-direction: column;
+    }
+
+    .vehicle-clear-button {
+        min-height: 42px;
+    }
+}

@@ -1,54 +1,315 @@
-import { useState } from "react";
 import "./App.css";
+
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+
+// ============================================================
+// AUTH
+// ============================================================
+
 import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
-import InvestigatorDashboard from "./pages/InvestigatorDashboard";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Cameras from "./pages/Cameras";
-import AdminLayout from "./components/AdminLayout";
-import Investigators from "./pages/Investigators";
-import Report from "./pages/Report";
+
+import ProtectedRoute
+  from "./components/ProtectedRoute";
+
+
+// ============================================================
+// SHARED APPLICATION LAYOUT
+// ============================================================
+
+import AdminLayout
+  from "./components/AdminLayout";
+
+
+// ============================================================
+// PAGES
+// ============================================================
+
+import Dashboard
+  from "./pages/Dashboard";
+
+import CCTVManagement
+  from "./pages/CCTVManagement";
+
+import RegisteredCameras
+  from "./pages/RegisteredCameras";
+
+import VehicleClassification
+  from "./pages/VehicleClassification";
+
+import NumberPlateDetection
+  from "./pages/NumberPlateDetection";
+
+import Investigators
+  from "./pages/Investigators";
+
+import Report
+  from "./pages/Report";
+
+import VehicleSearch
+  from "./pages/VehicleSearch";
+
 import VehicleReport from "./pages/VehicleReport";
-import TrackingReport from "./pages/TrackingReport";
-import PlateReport from "./pages/PlateReport";
 import HistoryReport from "./pages/HistoryReport";
 import CameraReport from "./pages/CameraReport";
-import TextVehicleSearch from "./pages/TextVehicleSearch";
+
+
+// ============================================================
+// SYSTEM ADMIN
+// ============================================================
+
+import OrganizationManagement
+  from "./pages/OrganizationManagement";
+import ImageSearch from "./pages/imageSearch";
+
 
 function App() {
+
   return (
+
     <Routes>
 
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/login" element={<LoginPage />} />
+
+      {/* ==================================================
+                PUBLIC
+            ================================================== */}
+
+      <Route
+        path="/"
+        element={
+          <LoginPage />
+        }
+      />
+
+      <Route
+        path="/login"
+        element={
+          <LoginPage />
+        }
+      />
+
+
+      {/* ==================================================
+                SYSTEM ADMIN
+            ================================================== */}
+
+      <Route
+        path="/organization-management"
+        element={
+
+          <ProtectedRoute
+            role="SYSTEM_ADMIN"
+          >
+
+            <OrganizationManagement />
+
+          </ProtectedRoute>
+
+        }
+      />
+
+
+      {/* ==================================================
+                ADMIN + INVESTIGATOR
+            ================================================== */}
 
       <Route
         element={
-          <ProtectedRoute role="ADMIN">
+
+          <ProtectedRoute
+            roles={[
+              "ADMIN",
+              "INVESTIGATOR",
+            ]}
+          >
+
+
             <AdminLayout />
+
           </ProtectedRoute>
+
         }
       >
-        <Route path="/admin-dashboard" element={<Dashboard />} />
-        <Route path="/camera-management" element={<Cameras />} />
-        <Route path="/investigator-management" element={<Investigators />} />
-        <Route path="/reports" element={<Report />} />
-        <Route path="/reports/vehicles" element={<VehicleReport />} />
-        <Route path="/reports/plates" element={<PlateReport />} />
-        <Route path="/reports/tracking" element={<TrackingReport />} />
+
+
+        {/* =================================================
+                    COMMON DASHBOARD
+                ================================================= */}
+
+        <Route
+          path="/admin-dashboard"
+          element={
+            <Dashboard />
+          }
+        />
+
+        {/* Optional cleaner URL */}
+
+        <Route
+          path="/dashboard"
+          element={
+            <Dashboard />
+          }
+        />
+
+
+        {/* =================================================
+                    COMMON INVESTIGATION FEATURES
+                ================================================= */}
+
+        <Route
+          path="/vehicle-classification"
+          element={
+            <VehicleClassification />
+          }
+        />
+
+
+        <Route
+          path="/image-search"
+          element={
+            <ImageSearch />
+          }
+        />
+
+        <Route
+          path="/number-plate"
+          element={
+            <NumberPlateDetection />
+          }
+        />
+
+        <Route
+          path="/vehicle-search"
+          element={
+            <VehicleSearch />
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <Report />
+          }
+        />
+
         <Route path="/reports/history" element={<HistoryReport />} />
         <Route path="/reports/cameras" element={<CameraReport />} />
-        <Route path="/text-search" element={<TextVehicleSearch />} />
-        {/* More admin pages */}
+
+        <Route path="/reports/vehicles" element={<VehicleReport />} />
+
+
+        {/* =================================================
+                    ADMIN ONLY
+                    ================================================= */}
+
+        {/* <Route
+          path="/camera-management"
+          element={
+
+            <ProtectedRoute
+              role="ADMIN"
+            >
+
+              <Cameras />
+
+            </ProtectedRoute>
+
+          }
+        /> */}
+
+        {/* =============================================
+            CCTV MANAGEMENT
+        ============================================= */}
+
+        <Route
+          path="/CCTV-Management"
+          element={
+
+            <ProtectedRoute
+              role="ADMIN"
+            >
+
+              <CCTVManagement />
+
+            </ProtectedRoute>
+
+          }
+        />
+
+        <Route
+          path="/registered-cameras"
+          element={
+
+            <ProtectedRoute
+              role="ADMIN"
+            >
+
+              <RegisteredCameras />
+
+            </ProtectedRoute>
+
+          }
+        />
+
+        <Route
+          path="/investigator-management"
+          element={
+
+            <ProtectedRoute
+              role="ADMIN"
+            >
+
+              <Investigators />
+
+            </ProtectedRoute>
+
+          }
+        />
+
       </Route>
 
-    </Routes>
 
-    // <div>
-    //   <LoginPage></LoginPage>
-    // </div>
+      {/* ==================================================
+                OLD INVESTIGATOR DASHBOARD
+            ================================================== */}
+
+      <Route
+        path="/investigator-dashboard"
+        element={
+
+          <Navigate
+            to="/admin-dashboard"
+            replace
+          />
+
+        }
+      />
+
+
+      {/* ==================================================
+                FALLBACK
+            ================================================== */}
+
+      <Route
+        path="*"
+        element={
+
+          <Navigate
+            to="/login"
+            replace
+          />
+
+        }
+      />
+
+    </Routes>
   );
 }
+
 
 export default App;
