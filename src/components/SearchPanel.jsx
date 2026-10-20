@@ -27,6 +27,42 @@ export default function SearchPanel({
       {/* Content */}
       <div className="relative flex flex-col items-center text-center">
 
+        {/* Search Button */}
+        <motion.button
+          whileHover={{
+            scale: 1.04,
+            boxShadow: "0 15px 35px rgba(193, 138, 50, 0.25)",
+          }}
+          whileTap={{
+            scale: 0.96,
+          }}
+          onClick={onSearch}
+          disabled={loading}
+          className="mt-2 mb-4 inline-flex min-w-[230px] items-center justify-center rounded-2xl bg-gradient-to-r from-[#8A1740] to-[#C18A32] px-8 py-4 font-bold text-white shadow-xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+
+          {loading ? (
+            <>
+              <Loader2
+                className="mr-3 animate-spin"
+                size={21}
+              />
+
+              AI Processing...
+            </>
+          ) : (
+            <>
+              <Search
+                className="mr-3"
+                size={21}
+              />
+
+              SEARCH VEHICLE
+            </>
+          )}
+
+        </motion.button>
+
         {/* Icon */}
         <motion.div
           animate={{
@@ -70,41 +106,7 @@ export default function SearchPanel({
           and search across multiple CCTV cameras.
         </p>
 
-        {/* Search Button */}
-        <motion.button
-          whileHover={{
-            scale: 1.04,
-            boxShadow: "0 15px 35px rgba(193, 138, 50, 0.25)",
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          onClick={onSearch}
-          disabled={loading}
-          className="mt-8 inline-flex min-w-[230px] items-center justify-center rounded-2xl bg-gradient-to-r from-[#8A1740] to-[#C18A32] px-8 py-4 font-bold text-white shadow-xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
-        >
 
-          {loading ? (
-            <>
-              <Loader2
-                className="mr-3 animate-spin"
-                size={21}
-              />
-
-              AI Processing...
-            </>
-          ) : (
-            <>
-              <Search
-                className="mr-3"
-                size={21}
-              />
-
-              SEARCH VEHICLE
-            </>
-          )}
-
-        </motion.button>
 
         {/* Status */}
         <motion.div

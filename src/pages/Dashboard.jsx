@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Dashboard.css";
+import Hero from "../components/Hero";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -66,12 +67,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1 className="dashboard-title">
-          Welcome to <span className="dashboard-title-highlight">AutoTrace</span> Dashboard
-        </h1>
-        <p className="dashboard-subtitle">
-          Select any section below or use the sidebar to access system modules and features.
-        </p>
+        <Hero></Hero>
       </div>
 
       <div className="dashboard-section-title">

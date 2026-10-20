@@ -1239,7 +1239,7 @@ function CCTVManagement() {
 
             <span>
               Connecting to the
-              Spring Boot camera service.
+              camera service.
             </span>
 
           </div>

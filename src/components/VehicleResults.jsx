@@ -11,22 +11,22 @@ import {
   Target,
 } from "lucide-react";
 
-export default function VehicleResults({ result,preview,
+export default function VehicleResults({ result, preview,
 
- }) {
+}) {
   if (!result) return null;
 
   const vehicleType =
-      result.vehicleType ||
-      result.matches?.[0]?.vehicleType ||
-      "Unknown";
+    result.vehicleType ||
+    result.matches?.[0]?.vehicleType ||
+    "Unknown";
   const color =
     result.color || "Unknown";
 
   const confidence =
-     Number(result.confidence) > 0
-    ? Number(result.confidence)
-    : Number(result.matches?.[0]?.similarity || 0) * 100;
+    Number(result.confidence) > 0
+      ? Number(result.confidence)
+      : Number(result.matches?.[0]?.similarity || 0) * 100;
 
   const detectionConfidence =
     Number(result.detectionConfidence || 0);
@@ -178,8 +178,8 @@ export default function VehicleResults({ result,preview,
                 value={
                   detectionConfidence > 0
                     ? `${(
-                        detectionConfidence * 100
-                      ).toFixed(1)}%`
+                      detectionConfidence * 100
+                    ).toFixed(1)}%`
                     : "Not detected"
                 }
               />
@@ -192,10 +192,10 @@ export default function VehicleResults({ result,preview,
                 value={
                   matches.length > 0
                     ? `${(
-                        Number(
-                          matches[0]?.similarity || 0
-                        ) * 100
-                      ).toFixed(1)}%`
+                      Number(
+                        matches[0]?.similarity || 0
+                      ) * 100
+                    ).toFixed(1)}%`
                     : "No match"
                 }
               />

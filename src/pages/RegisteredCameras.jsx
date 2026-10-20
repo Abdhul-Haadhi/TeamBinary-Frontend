@@ -1,48 +1,384 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, {
+    useRef,
+    useState,
+    useEffect,
+} from "react";
+
 import "../css/RegisteredCameras.css";
 
 
+// ============================================================
+// API CONFIGURATION
+// ============================================================
+
+const API_BASE = "http://localhost:8080/api";
+
+const CAMERA_API = `${API_BASE}/cameras`;
+
+
+// ============================================================
+// AUTH HELPERS
+// ============================================================
+
+const getToken = () => {
+
+    return localStorage.getItem("token");
+
+};
+
+
+const getAuthHeaders = () => {
+
+    const token = getToken();
+
+    if (!token) {
+
+        throw new Error(
+            "Authentication token not found. Please log in again."
+        );
+
+    }
+
+    return {
+
+        Authorization:
+            `Bearer ${token}`,
+
+    };
+
+};
+
+
+const getJsonAuthHeaders = () => {
+
+    const token = getToken();
+
+    if (!token) {
+
+        throw new Error(
+            "Authentication token not found. Please log in again."
+        );
+
+    }
+
+    return {
+
+        "Content-Type":
+            "application/json",
+
+        Authorization:
+            `Bearer ${token}`,
+
+    };
+
+};
+
+
+// ============================================================
+// CAMERA / RESPONSE HELPERS
+// ============================================================
+
+const getCameraId = (
+    camera
+) => {
+
+    return (
+        camera?.cameraId
+        ??
+        camera?.id
+    );
+
+};
+
+
+const getCameraName = (
+    camera
+) => {
+
+    return (
+        camera?.cameraName
+        ??
+        camera?.name
+        ??
+        "Unnamed Camera"
+    );
+
+};
+
+
+const getCameraLocation = (
+    camera
+) => {
+
+    return (
+        camera?.location
+        ??
+        camera?.cameraLocation
+        ??
+        "Location not specified"
+    );
+
+};
+
+
+const getCameraStatus = (
+    camera
+) => {
+
+    return (
+        camera?.status
+        ??
+        "OFFLINE"
+    );
+
+};
+
+
+// ============================================================
+// DISPLAY STATUS
+//
+// Some backend camera APIs may use ACTIVE / INACTIVE / OFFLINE
+// while this page previously displayed ONLINE / OFFLINE.
+//
+// We normalize only the UI display here.
+// ============================================================
+
+const getCameraDisplayStatus = (
+    camera
+) => {
+
+    const status = String(
+        getCameraStatus(camera)
+    ).toUpperCase();
+
+
+    if (
+        status === "ONLINE"
+        ||
+        status === "ACTIVE"
+    ) {
+
+        return "ONLINE";
+
+    }
+
+
+    return "OFFLINE";
+
+};
+
+
+const getCameraDescription = (
+    camera
+) => {
+
+    return (
+        camera?.description
+        ??
+        "No description"
+    );
+
+};
+
+
+// ============================================================
+// COMPONENT
+// ============================================================
+
 const RegisteredCameras = () => {
-    const fileInputRef = useRef(null);
 
-    const [showAddCamera, setShowAddCamera] = useState(false);
+    const fileInputRef =
+        useRef(null);
 
-    const [selectedCamera, setSelectedCamera] = useState(null);
 
-    const [selectedVideo, setSelectedVideo] = useState(null);
+    // ========================================================
+    // STATE
+    // ========================================================
 
-    const [cameraForm, setCameraForm] = useState({
+    const [
+        showAddCamera,
+        setShowAddCamera
+    ] = useState(false);
+
+
+    const [
+        selectedCamera,
+        setSelectedCamera
+    ] = useState(null);
+
+
+    const [
+        selectedVideo,
+        setSelectedVideo
+    ] = useState(null);
+
+
+    const [
+        cameraForm,
+        setCameraForm
+    ] = useState({
+
         cameraName: "",
+
         location: "",
+
         cameraType: "CCTV",
+
         description: "",
+
     });
 
 
-    const [cameras, setCameras] = useState([]);
+    const [
+        cameras,
+        setCameras
+    ] = useState([]);
 
-    const [videoFootage, setVideoFootage] = useState([]);
+
+    const [
+        videoFootage,
+        setVideoFootage
+    ] = useState([]);
+
+
+    const [
+        loadingCameras,
+        setLoadingCameras
+    ] = useState(false);
+
+
+    const [
+        uploadingVideo,
+        setUploadingVideo
+    ] = useState(false);
+
+
+    const [
+        loadingFootage,
+        setLoadingFootage
+    ] = useState(false);
+
+
+    // ============================================================
+    // LOAD CAMERAS
+    // ============================================================
 
     useEffect(() => {
 
         const loadCameras = async () => {
 
+            setLoadingCameras(true);
+
+
             try {
 
-                const response = await fetch(
-                    "http://localhost:8080/api/cameras"
-                );
+                const response =
+                    await fetch(
+                        CAMERA_API,
+                        {
+                            method: "GET",
+
+                            headers:
+                                getAuthHeaders(),
+                        }
+                    );
+
+
+                // ------------------------------------------------
+                // AUTH ERRORS
+                // ------------------------------------------------
+
+                if (
+                    response.status === 401
+                ) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+
+                }
+
+
+                if (
+                    response.status === 403
+                ) {
+
+                    throw new Error(
+                        "You are not authorized to view registered cameras."
+                    );
+
+                }
+
+
+                // ------------------------------------------------
+                // OTHER SERVER ERRORS
+                // ------------------------------------------------
 
                 if (!response.ok) {
-                    throw new Error(
-                        "Failed to load cameras"
+
+                    const errorText =
+                        await response.text();
+
+
+                    console.error(
+                        "Camera API error:",
+                        response.status,
+                        errorText
                     );
+
+
+                    throw new Error(
+                        errorText
+                        ||
+                        `Failed to load cameras. Server returned ${response.status}.`
+                    );
+
                 }
+
+
+                // ------------------------------------------------
+                // RESPONSE
+                // ------------------------------------------------
 
                 const data =
                     await response.json();
 
-                setCameras(data);
+
+                console.log(
+                    "Cameras API response:",
+                    data
+                );
+
+
+                // ------------------------------------------------
+                // SUPPORT MULTIPLE RESPONSE SHAPES
+                // ------------------------------------------------
+
+                const cameraList =
+
+                    Array.isArray(data)
+
+                        ? data
+
+                        : Array.isArray(
+                            data?.cameras
+                        )
+
+                            ? data.cameras
+
+                            : Array.isArray(
+                                data?.data
+                            )
+
+                                ? data.data
+
+                                : [];
+
+
+                setCameras(
+                    cameraList
+                );
+
 
             } catch (error) {
 
@@ -51,11 +387,32 @@ const RegisteredCameras = () => {
                     error
                 );
 
+
+                setCameras(
+                    []
+                );
+
+
+                alert(
+                    error.message
+                    ||
+                    "Unable to load registered cameras."
+                );
+
+
+            } finally {
+
+                setLoadingCameras(
+                    false
+                );
+
             }
+
         };
 
 
         loadCameras();
+
 
     }, []);
 
@@ -64,73 +421,230 @@ const RegisteredCameras = () => {
     // CAMERA FORM
     // ============================================================
 
-    const handleCameraFormChange = (event) => {
-        const { name, value } = event.target;
+    const handleCameraFormChange = (
+        event
+    ) => {
 
-        setCameraForm((previous) => ({
-            ...previous,
-            [name]: value,
-        }));
+        const {
+            name,
+            value
+        } = event.target;
+
+
+        setCameraForm(
+            (previous) => ({
+
+                ...previous,
+
+                [name]:
+                    value,
+
+            })
+        );
+
     };
 
 
-    const handleAddCamera = async (event) => {
+    // ============================================================
+    // ADD CAMERA
+    // ============================================================
+
+    const handleAddCamera = async (
+        event
+    ) => {
+
         event.preventDefault();
 
-        if (!cameraForm.cameraName.trim()) {
-            return;
-        }
 
-        try {
-            const response = await fetch(
-                "http://localhost:8080/api/camerass",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        cameraName: cameraForm.cameraName,
-                        location: cameraForm.location,
-                        cameraType: cameraForm.cameraType,
-                        description: cameraForm.description,
-                        cameraUrl: "",
-                    }),
-                }
+        if (
+            !cameraForm.cameraName.trim()
+        ) {
+
+            alert(
+                "Please enter a camera name."
             );
 
-            if (!response.ok) {
-                throw new Error("Failed to create camera");
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    CAMERA_API,
+                    {
+                        method: "POST",
+
+                        headers:
+                            getJsonAuthHeaders(),
+
+                        body:
+                            JSON.stringify({
+
+                                cameraName:
+                                    cameraForm.cameraName.trim(),
+
+                                location:
+                                    cameraForm.location.trim(),
+
+                                cameraType:
+                                    cameraForm.cameraType,
+
+                                description:
+                                    cameraForm.description.trim(),
+
+                                cameraUrl:
+                                    "",
+
+                            }),
+
+                    }
+                );
+
+
+            // ------------------------------------------------
+            // AUTH ERRORS
+            // ------------------------------------------------
+
+            if (
+                response.status === 401
+            ) {
+
+                throw new Error(
+                    "Your session has expired. Please log in again."
+                );
+
             }
 
-            const savedCamera = await response.json();
 
-            setCameras((previous) => [
-                ...previous,
-                savedCamera,
-            ]);
+            if (
+                response.status === 403
+            ) {
+
+                throw new Error(
+                    "You do not have permission to create a camera."
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // SERVER ERROR
+            // ------------------------------------------------
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+
+                console.error(
+                    "Add camera error:",
+                    response.status,
+                    errorText
+                );
+
+
+                throw new Error(
+                    errorText
+                    ||
+                    "Failed to create camera."
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // RESPONSE
+            // ------------------------------------------------
+
+            const savedCamera =
+                await response.json();
+
+
+            console.log(
+                "Saved camera:",
+                savedCamera
+            );
+
+
+            setCameras(
+                (previous) => [
+
+                    ...previous,
+
+                    savedCamera,
+
+                ]
+            );
+
 
             setCameraForm({
+
                 cameraName: "",
+
                 location: "",
+
                 cameraType: "CCTV",
+
                 description: "",
+
             });
 
-            setShowAddCamera(false);
+
+            setShowAddCamera(
+                false
+            );
+
+
+            alert(
+                "Camera added successfully."
+            );
+
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Add camera error:",
+                error
+            );
+
 
             alert(
+                error.message
+                ||
                 "Unable to create camera."
             );
+
         }
+
     };
 
 
-    const handleDeleteCamera = async (cameraId) => {
+    // ============================================================
+    // DELETE CAMERA
+    // ============================================================
+
+    const handleDeleteCamera = async (
+        cameraId
+    ) => {
+
+        if (
+            cameraId === undefined
+            ||
+            cameraId === null
+        ) {
+
+            alert(
+                "Invalid camera ID."
+            );
+
+            return;
+
+        }
+
 
         const confirmed =
             window.confirm(
@@ -139,81 +653,273 @@ const RegisteredCameras = () => {
 
 
         if (!confirmed) {
+
             return;
+
         }
 
 
         try {
 
-            const response = await fetch(
-                `http://localhost:8080/api/camerass/${cameraId}`,
-                {
-                    method: "DELETE",
-                }
-            );
+            const response =
+                await fetch(
 
+                    `${CAMERA_API}/${cameraId}`,
 
-            if (!response.ok) {
-                throw new Error(
-                    "Failed to delete camera"
+                    {
+                        method: "DELETE",
+
+                        headers:
+                            getAuthHeaders(),
+                    }
+
                 );
-            }
-
-
-            setCameras((previous) =>
-                previous.filter(
-                    (camera) =>
-                        camera.id !== cameraId
-                )
-            );
-
-
-            setVideoFootage((previous) =>
-                previous.filter(
-                    (video) =>
-                        video.cameraId !== cameraId
-                )
-            );
 
 
             if (
-                selectedCamera?.id === cameraId
+                response.status === 401
             ) {
-                setSelectedCamera(null);
+
+                throw new Error(
+                    "Your session has expired. Please log in again."
+                );
+
             }
+
+
+            if (
+                response.status === 403
+            ) {
+
+                throw new Error(
+                    "You do not have permission to delete cameras."
+                );
+
+            }
+
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+
+                console.error(
+                    "Delete camera error:",
+                    response.status,
+                    errorText
+                );
+
+
+                throw new Error(
+                    errorText
+                    ||
+                    "Failed to delete camera."
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // REMOVE FROM CAMERA LIST
+            // ------------------------------------------------
+
+            setCameras(
+                (previous) =>
+                    previous.filter(
+                        (camera) =>
+
+                            String(
+                                getCameraId(camera)
+                            )
+                            !==
+                            String(cameraId)
+                    )
+            );
+
+
+            // ------------------------------------------------
+            // REMOVE FOOTAGE BELONGING TO CAMERA
+            // ------------------------------------------------
+
+            setVideoFootage(
+                (previous) =>
+                    previous.filter(
+                        (video) =>
+
+                            String(
+                                video.cameraId
+                            )
+                            !==
+                            String(cameraId)
+                    )
+            );
+
+
+            // ------------------------------------------------
+            // CLEAR SELECTED CAMERA
+            // ------------------------------------------------
+
+            if (
+
+                selectedCamera
+                &&
+                String(
+                    getCameraId(
+                        selectedCamera
+                    )
+                )
+                ===
+                String(cameraId)
+
+            ) {
+
+                setSelectedCamera(
+                    null
+                );
+
+                setSelectedVideo(
+                    null
+                );
+
+                setVideoFootage(
+                    []
+                );
+
+            }
+
+
+            alert(
+                "Camera removed successfully."
+            );
 
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Delete camera error:",
+                error
+            );
+
 
             alert(
+                error.message
+                ||
                 "Unable to delete camera."
             );
+
         }
+
     };
 
 
-    const handleSelectCamera = async (camera) => {
+    // ============================================================
+    // SELECT CAMERA
+    // ============================================================
 
-        setSelectedCamera(camera);
+    const handleSelectCamera = async (
+        camera
+    ) => {
 
-        setSelectedVideo(null);
+        const cameraId =
+            getCameraId(
+                camera
+            );
 
-        setVideoFootage([]);
+
+        if (
+            cameraId === undefined
+            ||
+            cameraId === null
+        ) {
+
+            alert(
+                "Invalid camera ID."
+            );
+
+            return;
+
+        }
+
+
+        setSelectedCamera(
+            camera
+        );
+
+
+        setSelectedVideo(
+            null
+        );
+
+
+        setVideoFootage(
+            []
+        );
+
+
+        setLoadingFootage(
+            true
+        );
 
 
         try {
 
-            const response = await fetch(
-                `http://localhost:8080/api/camerass/${camera.id}/footage`
-            );
+            const response =
+                await fetch(
+
+                    `${CAMERA_API}/${cameraId}/footage`,
+
+                    {
+                        method: "GET",
+
+                        headers:
+                            getAuthHeaders(),
+                    }
+
+                );
+
+
+            if (
+                response.status === 401
+            ) {
+
+                throw new Error(
+                    "Your session has expired. Please log in again."
+                );
+
+            }
+
+
+            if (
+                response.status === 403
+            ) {
+
+                throw new Error(
+                    "You do not have permission to view this camera's footage."
+                );
+
+            }
 
 
             if (!response.ok) {
-                throw new Error(
-                    "Failed to load footage"
+
+                const errorText =
+                    await response.text();
+
+
+                console.error(
+                    "Footage API error:",
+                    response.status,
+                    errorText
                 );
+
+
+                throw new Error(
+                    errorText
+                    ||
+                    "Failed to load CCTV footage."
+                );
+
             }
 
 
@@ -221,31 +927,94 @@ const RegisteredCameras = () => {
                 await response.json();
 
 
+            console.log(
+                "Footage API response:",
+                data
+            );
+
+
+            // ------------------------------------------------
+            // SUPPORT MULTIPLE RESPONSE SHAPES
+            // ------------------------------------------------
+
+            const footageList =
+
+                Array.isArray(data)
+
+                    ? data
+
+                    : Array.isArray(
+                        data?.footage
+                    )
+
+                        ? data.footage
+
+                        : Array.isArray(
+                            data?.data
+                        )
+
+                            ? data.data
+
+                            : [];
+
+
+            // ------------------------------------------------
+            // FORMAT FOOTAGE FOR UI
+            // ------------------------------------------------
+
             const formattedFootage =
-                data.map((video) => ({
+                footageList.map(
+                    (video) => ({
 
-                    id: video.id,
+                        id:
+                            video?.id
+                            ??
+                            video?.footageId,
 
-                    cameraId:
-                        video.cameraId,
+                        cameraId:
+                            video?.cameraId
+                            ??
+                            cameraId,
 
-                    fileName:
-                        video.fileName,
+                        fileName:
+                            video?.fileName
+                            ??
+                            video?.originalFileName
+                            ??
+                            video?.filename
+                            ??
+                            "Unnamed footage",
 
-                    date:
-                        video.uploadedAt
-                            ?.split("T")[0] || "--",
+                        date:
+                            video?.uploadedAt
+                                ?.split("T")[0]
+                            ??
+                            "--",
 
-                    startTime: "--",
+                        startTime:
+                            video?.startTime
+                            ??
+                            "--",
 
-                    endTime: "--",
+                        endTime:
+                            video?.endTime
+                            ??
+                            "--",
 
-                    duration: "--",
+                        duration:
+                            video?.duration
+                            ??
+                            "--",
 
-                    status:
-                        video.processingStatus,
+                        status:
+                            video?.processingStatus
+                            ??
+                            video?.status
+                            ??
+                            "UPLOADED",
 
-                }));
+                    })
+                );
 
 
             setVideoFootage(
@@ -259,311 +1028,736 @@ const RegisteredCameras = () => {
                 "Footage loading error:",
                 error
             );
+
+
+            setVideoFootage(
+                []
+            );
+
+
+            alert(
+                error.message
+                ||
+                "Unable to load CCTV footage."
+            );
+
+
+        } finally {
+
+            setLoadingFootage(
+                false
+            );
+
         }
+
     };
 
 
     // ============================================================
-    // VIDEO UPLOAD
+    // VIDEO SELECT
     // ============================================================
 
-    const handleVideoSelect = (event) => {
-        const file = event.target.files?.[0];
+    const handleVideoSelect = (
+        event
+    ) => {
+
+        const file =
+            event.target.files?.[0];
+
 
         if (!file) {
+
             return;
+
         }
 
-        if (!file.type.startsWith("video/")) {
-            alert("Please select a valid video file.");
 
-            event.target.value = "";
+        if (
+            !file.type.startsWith(
+                "video/"
+            )
+        ) {
+
+            alert(
+                "Please select a valid video file."
+            );
+
+
+            event.target.value =
+                "";
+
+
             return;
+
         }
 
-        setSelectedVideo(file);
+
+        setSelectedVideo(
+            file
+        );
+
     };
 
 
-    const handleUploadVideo = async () => {
+    // ============================================================
+    // UPLOAD VIDEO
+    // ============================================================
 
-        if (!selectedCamera) {
-            alert("Please select a camera first.");
-            return;
-        }
+    const handleUploadVideo =
+        async () => {
 
-        if (!selectedVideo) {
-            alert("Please select a video file first.");
-            return;
-        }
+            if (!selectedCamera) {
+
+                alert(
+                    "Please select a camera first."
+                );
+
+                return;
+
+            }
 
 
-        try {
+            if (!selectedVideo) {
 
-            const formData = new FormData();
+                alert(
+                    "Please select a video file first."
+                );
 
-            formData.append(
-                "file",
-                selectedVideo
+                return;
+
+            }
+
+
+            const cameraId =
+                getCameraId(
+                    selectedCamera
+                );
+
+
+            if (
+                cameraId === undefined
+                ||
+                cameraId === null
+            ) {
+
+                alert(
+                    "Invalid camera ID."
+                );
+
+                return;
+
+            }
+
+
+            setUploadingVideo(
+                true
             );
 
 
-            const response = await fetch(
-                `http://localhost:8080/api/camerass/${selectedCamera.id}/footage`,
-                {
-                    method: "POST",
-                    body: formData,
+            try {
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "file",
+                    selectedVideo
+                );
+
+
+                const response =
+                    await fetch(
+
+                        `${CAMERA_API}/${cameraId}/footage`,
+
+                        {
+                            method: "POST",
+
+                            headers:
+                                getAuthHeaders(),
+
+                            // IMPORTANT:
+                            // Do NOT manually set Content-Type here.
+                            // Browser sets multipart/form-data boundary.
+
+                            body:
+                                formData,
+
+                        }
+
+                    );
+
+
+                if (
+                    response.status === 401
+                ) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+
                 }
-            );
 
 
-            if (!response.ok) {
+                if (
+                    response.status === 403
+                ) {
 
-                const errorText =
-                    await response.text();
+                    throw new Error(
+                        "You do not have permission to upload CCTV footage."
+                    );
+
+                }
+
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+
+                    console.error(
+                        "Upload error:",
+                        response.status,
+                        errorText
+                    );
+
+
+                    throw new Error(
+                        errorText
+                        ||
+                        "Failed to upload CCTV footage."
+                    );
+
+                }
+
+
+                const savedFootage =
+                    await response.json();
+
+
+                console.log(
+                    "Saved footage:",
+                    savedFootage
+                );
+
+
+                const newFootage = {
+
+                    id:
+                        savedFootage?.id
+                        ??
+                        savedFootage?.footageId,
+
+                    cameraId:
+                        savedFootage?.cameraId
+                        ??
+                        cameraId,
+
+                    fileName:
+                        savedFootage?.fileName
+                        ??
+                        savedFootage?.originalFileName
+                        ??
+                        savedFootage?.filename
+                        ??
+                        selectedVideo.name,
+
+                    date:
+                        savedFootage?.uploadedAt
+                            ?.split("T")[0]
+                        ??
+                        new Date()
+                            .toISOString()
+                            .split("T")[0],
+
+                    startTime:
+                        savedFootage?.startTime
+                        ??
+                        "--",
+
+                    endTime:
+                        savedFootage?.endTime
+                        ??
+                        "--",
+
+                    duration:
+                        savedFootage?.duration
+                        ??
+                        "--",
+
+                    status:
+                        savedFootage?.processingStatus
+                        ??
+                        savedFootage?.status
+                        ??
+                        "UPLOADED",
+
+                };
+
+
+                setVideoFootage(
+                    (previous) => [
+
+                        newFootage,
+
+                        ...previous,
+
+                    ]
+                );
+
+
+                setSelectedVideo(
+                    null
+                );
+
+
+                if (
+                    fileInputRef.current
+                ) {
+
+                    fileInputRef.current.value =
+                        "";
+
+                }
+
+
+                alert(
+                    "CCTV footage uploaded and saved successfully."
+                );
+
+
+            } catch (error) {
 
                 console.error(
                     "Upload error:",
-                    errorText
+                    error
                 );
 
-                throw new Error(
-                    "Failed to upload footage"
+
+                alert(
+                    error.message
+                    ||
+                    "Unable to upload CCTV footage."
                 );
+
+
+            } finally {
+
+                setUploadingVideo(
+                    false
+                );
+
+            }
+
+        };
+
+
+    // ============================================================
+    // PROCESS FOOTAGE
+    // ============================================================
+
+    const handleProcessFootage =
+        async (
+            footageId
+        ) => {
+
+            if (
+                footageId === undefined
+                ||
+                footageId === null
+            ) {
+
+                alert(
+                    "Invalid footage ID."
+                );
+
+                return;
+
             }
 
 
-            const savedFootage =
-                await response.json();
+            try {
+
+                // ----------------------------------------------
+                // UPDATE UI IMMEDIATELY
+                // ----------------------------------------------
+
+                setVideoFootage(
+                    (previous) =>
+                        previous.map(
+                            (video) =>
+
+                                String(
+                                    video.id
+                                )
+                                    ===
+                                    String(footageId)
+
+                                    ? {
+
+                                        ...video,
+
+                                        status:
+                                            "PROCESSING",
+
+                                    }
+
+                                    : video
+                        )
+                );
 
 
-            console.log(
-                "Saved footage:",
-                savedFootage
-            );
+                const response =
+                    await fetch(
 
+                        `${CAMERA_API}/footage/${footageId}/process`,
 
-            setVideoFootage((previous) => [
-                {
-                    id: savedFootage.id,
-                    cameraId:
-                        savedFootage.cameraId,
-                    fileName:
-                        savedFootage.fileName,
-                    date:
-                        savedFootage.uploadedAt
-                            ?.split("T")[0] || "--",
-                    startTime: "--",
-                    endTime: "--",
-                    duration: "--",
-                    status:
-                        savedFootage.processingStatus,
-                },
-                ...previous,
-            ]);
+                        {
+                            method: "POST",
 
-
-            setSelectedVideo(null);
-
-
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-            }
-
-
-            alert(
-                "CCTV footage uploaded and saved successfully."
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to upload CCTV footage."
-            );
-        }
-    };
-
-    const handleProcessFootage = async (footageId) => {
-
-        try {
-
-            // Immediately update UI
-            setVideoFootage((previous) =>
-                previous.map((video) =>
-                    video.id === footageId
-                        ? {
-                            ...video,
-                            status: "PROCESSING",
+                            headers:
+                                getAuthHeaders(),
                         }
-                        : video
-                )
-            );
+
+                    );
 
 
-            const response = await fetch(
-                `http://localhost:8080/api/camerass/footage/${footageId}/process`,
-                {
-                    method: "POST",
+                if (
+                    response.status === 401
+                ) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+
                 }
-            );
 
 
-            if (!response.ok) {
+                if (
+                    response.status === 403
+                ) {
 
-                const errorText =
-                    await response.text();
+                    throw new Error(
+                        "You do not have permission to process CCTV footage."
+                    );
+
+                }
+
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+
+                    console.error(
+                        "Processing error:",
+                        response.status,
+                        errorText
+                    );
+
+
+                    throw new Error(
+                        errorText
+                        ||
+                        "Video processing failed."
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Video processing response:",
+                    data
+                );
+
+
+                // ------------------------------------------------
+                // UPDATE STATUS
+                // ------------------------------------------------
+
+                setVideoFootage(
+                    (previous) =>
+                        previous.map(
+                            (video) =>
+
+                                String(
+                                    video.id
+                                )
+                                    ===
+                                    String(footageId)
+
+                                    ? {
+
+                                        ...video,
+
+                                        status:
+                                            "COMPLETED",
+
+                                    }
+
+                                    : video
+                        )
+                );
+
+
+                alert(
+
+                    `Processing completed.\n\n`
+                    +
+
+                    `Frames processed: ${data?.framesProcessed
+                    ??
+                    0
+                    }\n`
+
+                    +
+
+                    `Detections found: ${data?.detections?.length
+                    ??
+                    0
+                    }`
+
+                );
+
+
+            } catch (error) {
 
                 console.error(
                     "Processing error:",
-                    errorText
+                    error
                 );
 
-                throw new Error(
-                    "Video processing failed"
+
+                setVideoFootage(
+                    (previous) =>
+                        previous.map(
+                            (video) =>
+
+                                String(
+                                    video.id
+                                )
+                                    ===
+                                    String(footageId)
+
+                                    ? {
+
+                                        ...video,
+
+                                        status:
+                                            "FAILED",
+
+                                    }
+
+                                    : video
+                        )
                 );
+
+
+                alert(
+                    error.message
+                    ||
+                    "Unable to process the CCTV footage."
+                );
+
             }
 
-
-            const data =
-                await response.json();
-
-
-            console.log(
-                "Video processing response:",
-                data
-            );
-
-
-            setVideoFootage((previous) =>
-                previous.map((video) =>
-                    video.id === footageId
-                        ? {
-                            ...video,
-                            status: "COMPLETED",
-                        }
-                        : video
-                )
-            );
-
-
-            alert(
-                `Processing completed.\n\nFrames processed: ${data.framesProcessed || 0
-                }\nDetections found: ${data.detections?.length || 0
-                }`
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Processing error:",
-                error
-            );
-
-
-            setVideoFootage((previous) =>
-                previous.map((video) =>
-                    video.id === footageId
-                        ? {
-                            ...video,
-                            status: "FAILED",
-                        }
-                        : video
-                )
-            );
-
-
-            alert(
-                "Unable to process the CCTV footage."
-            );
-        }
-    };
-
-
-    const handleRemoveVideo = async (videoId) => {
-
-        const confirmed =
-            window.confirm(
-                "Are you sure you want to remove this footage?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        try {
-
-            const response = await fetch(
-                `http://localhost:8080/api/camerass/footage/${videoId}`,
-                {
-                    method: "DELETE",
-                }
-            );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to delete footage"
-                );
-            }
-
-
-            setVideoFootage((previous) =>
-                previous.filter(
-                    (video) =>
-                        video.id !== videoId
-                )
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Delete footage error:",
-                error
-            );
-
-            alert(
-                "Unable to delete the footage."
-            );
-        }
-    };
+        };
 
 
     // ============================================================
-    // HELPERS
+    // DELETE FOOTAGE
+    // ============================================================
+
+    const handleRemoveVideo =
+        async (
+            videoId
+        ) => {
+
+            const confirmed =
+                window.confirm(
+                    "Are you sure you want to remove this footage?"
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        `${CAMERA_API}/footage/${videoId}`,
+
+                        {
+                            method: "DELETE",
+
+                            headers:
+                                getAuthHeaders(),
+                        }
+
+                    );
+
+
+                if (
+                    response.status === 401
+                ) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+
+                }
+
+
+                if (
+                    response.status === 403
+                ) {
+
+                    throw new Error(
+                        "You do not have permission to delete CCTV footage."
+                    );
+
+                }
+
+
+                if (!response.ok) {
+
+                    const errorText =
+                        await response.text();
+
+
+                    console.error(
+                        "Delete footage error:",
+                        response.status,
+                        errorText
+                    );
+
+
+                    throw new Error(
+                        errorText
+                        ||
+                        "Failed to delete footage."
+                    );
+
+                }
+
+
+                setVideoFootage(
+                    (previous) =>
+                        previous.filter(
+                            (video) =>
+
+                                String(
+                                    video.id
+                                )
+                                !==
+                                String(videoId)
+                        )
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Delete footage error:",
+                    error
+                );
+
+
+                alert(
+                    error.message
+                    ||
+                    "Unable to delete the footage."
+                );
+
+            }
+
+        };
+
+
+    // ============================================================
+    // GET VIDEOS FOR SELECTED CAMERA
     // ============================================================
 
     const getCameraVideos = () => {
+
         if (!selectedCamera) {
+
             return [];
+
         }
+
+
+        const selectedCameraId =
+            getCameraId(
+                selectedCamera
+            );
+
 
         return videoFootage.filter(
             (video) =>
-                video.cameraId === selectedCamera.id
+
+                String(
+                    video.cameraId
+                )
+                ===
+                String(selectedCameraId)
+
         );
+
     };
 
 
-    const onlineCount = cameras.filter(
-        (camera) => camera.status === "ONLINE"
-    ).length;
+    // ============================================================
+    // SUMMARY COUNTS
+    // ============================================================
+
+    const onlineCount =
+        cameras.filter(
+            (camera) =>
+
+                getCameraDisplayStatus(
+                    camera
+                )
+                ===
+                "ONLINE"
+
+        ).length;
 
 
-    const offlineCount = cameras.filter(
-        (camera) => camera.status === "OFFLINE"
-    ).length;
+    const offlineCount =
+        cameras.filter(
+            (camera) =>
 
+                getCameraDisplayStatus(
+                    camera
+                )
+                ===
+                "OFFLINE"
+
+        ).length;
+
+
+    // ============================================================
+    // RETURN
+    // ============================================================
 
     return (
+
         <div className="camera-management-page">
+
 
             {/* ==================================================
                 PAGE HEADER
@@ -572,28 +1766,43 @@ const RegisteredCameras = () => {
             <div className="camera-page-header">
 
                 <div>
+
                     <span className="page-eyebrow">
                         Surveillance Management
                     </span>
 
+
                     <h1>
                         Registered Cameras
                     </h1>
+
 
                     <p>
                         Manage connected CCTV cameras and
                         upload recorded footage for vehicle
                         analysis.
                     </p>
+
                 </div>
 
-                {/* <button
+
+                {/* ==================================================
+                    ADD CAMERA
+                ================================================== */}
+
+                {/*
+                <button
                     className="add-camera-button"
-                    onClick={() => setShowAddCamera(true)}
+                    onClick={() =>
+                        setShowAddCamera(true)
+                    }
                 >
-                    <span className="button-icon">+</span>
+                    <span className="button-icon">
+                        +
+                    </span>
                     Add Camera
-                </button> */}
+                </button>
+                */}
 
             </div>
 
@@ -604,24 +1813,35 @@ const RegisteredCameras = () => {
 
             <div className="camera-summary-grid">
 
+
+                {/* TOTAL */}
+
                 <div className="summary-card">
 
                     <div className="summary-icon camera-icon">
                         📹
                     </div>
 
+
                     <div>
+
                         <span className="summary-label">
                             Total Cameras
                         </span>
 
+
                         <strong className="summary-value">
-                            {cameras.length}
+                            {
+                                cameras.length
+                            }
                         </strong>
+
                     </div>
 
                 </div>
 
+
+                {/* ONLINE */}
 
                 <div className="summary-card">
 
@@ -629,18 +1849,26 @@ const RegisteredCameras = () => {
                         ●
                     </div>
 
+
                     <div>
+
                         <span className="summary-label">
                             Online
                         </span>
 
+
                         <strong className="summary-value">
-                            {onlineCount}
+                            {
+                                onlineCount
+                            }
                         </strong>
+
                     </div>
 
                 </div>
 
+
+                {/* OFFLINE */}
 
                 <div className="summary-card">
 
@@ -648,18 +1876,26 @@ const RegisteredCameras = () => {
                         ●
                     </div>
 
+
                     <div>
+
                         <span className="summary-label">
                             Offline
                         </span>
 
+
                         <strong className="summary-value">
-                            {offlineCount}
+                            {
+                                offlineCount
+                            }
                         </strong>
+
                     </div>
 
                 </div>
 
+
+                {/* FOOTAGE */}
 
                 <div className="summary-card">
 
@@ -667,14 +1903,20 @@ const RegisteredCameras = () => {
                         🎞️
                     </div>
 
+
                     <div>
+
                         <span className="summary-label">
                             Recorded Footage
                         </span>
 
+
                         <strong className="summary-value">
-                            {videoFootage.length}
+                            {
+                                videoFootage.length
+                            }
                         </strong>
+
                     </div>
 
                 </div>
@@ -695,17 +1937,21 @@ const RegisteredCameras = () => {
 
                 <div className="camera-list-card">
 
+
                     <div className="section-header">
 
                         <div>
+
                             <h2>
                                 Connected Cameras
                             </h2>
+
 
                             <p>
                                 Select a camera to manage its
                                 recorded footage.
                             </p>
+
                         </div>
 
                     </div>
@@ -713,96 +1959,193 @@ const RegisteredCameras = () => {
 
                     <div className="camera-list">
 
-                        {cameras.length === 0 ? (
+
+                        {loadingCameras ? (
 
                             <div className="empty-state">
+
+                                <div className="empty-icon">
+                                    ⏳
+                                </div>
+
+
+                                <h3>
+                                    Loading cameras...
+                                </h3>
+
+
+                                <p>
+                                    Please wait while the
+                                    registered cameras are loaded.
+                                </p>
+
+                            </div>
+
+                        ) : cameras.length === 0 ? (
+
+                            <div className="empty-state">
+
                                 <div className="empty-icon">
                                     📹
                                 </div>
+
 
                                 <h3>
                                     No cameras connected
                                 </h3>
 
+
                                 <p>
-                                    Add a camera to begin managing
-                                    CCTV footage.
+                                    Add a camera to begin
+                                    managing CCTV footage.
                                 </p>
+
                             </div>
 
                         ) : (
 
-                            cameras.map((camera) => (
+                            cameras.map(
+                                (camera) => {
 
-                                <div
-                                    key={camera.id}
-                                    className={`camera-item ${selectedCamera?.id === camera.id
-                                        ? "selected"
-                                        : ""
-                                        }`}
-                                    onClick={() =>
-                                        handleSelectCamera(camera)
-                                    }
-                                >
-
-                                    <div className="camera-item-icon">
-                                        📹
-                                    </div>
+                                    const cameraId =
+                                        getCameraId(
+                                            camera
+                                        );
 
 
-                                    <div className="camera-item-info">
+                                    const cameraStatus =
+                                        getCameraDisplayStatus(
+                                            camera
+                                        );
 
-                                        <div className="camera-name-row">
 
-                                            <h3>
-                                                {camera.cameraName}
-                                            </h3>
+                                    return (
 
-                                            <span
-                                                className={`status-badge ${camera.status === "ONLINE"
-                                                    ? "online"
-                                                    : "offline"
-                                                    }`}
-                                            >
-                                                <span className="status-dot"></span>
-                                                {camera.status}
-                                            </span>
+                                        <div
+                                            key={
+                                                cameraId
+                                            }
+
+                                            className={`
+                                                camera-item
+                                                ${String(
+                                                getCameraId(
+                                                    selectedCamera
+                                                )
+                                            )
+                                                    ===
+                                                    String(cameraId)
+                                                    ? "selected"
+                                                    : ""
+                                                }
+                                            `}
+
+                                            onClick={() =>
+                                                handleSelectCamera(
+                                                    camera
+                                                )
+                                            }
+                                        >
+
+
+                                            <div className="camera-item-icon">
+                                                📹
+                                            </div>
+
+
+                                            <div className="camera-item-info">
+
+
+                                                <div className="camera-name-row">
+
+                                                    <h3>
+                                                        {
+                                                            getCameraName(
+                                                                camera
+                                                            )
+                                                        }
+                                                    </h3>
+
+
+                                                    <span
+                                                        className={`
+                                                            status-badge
+                                                            ${cameraStatus
+                                                                ===
+                                                                "ONLINE"
+                                                                ? "online"
+                                                                : "offline"
+                                                            }
+                                                        `}
+                                                    >
+
+                                                        <span className="status-dot"></span>
+
+                                                        {
+                                                            cameraStatus
+                                                        }
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                <p>
+                                                    📍{" "}
+                                                    {
+                                                        getCameraLocation(
+                                                            camera
+                                                        )
+                                                    }
+                                                </p>
+
+
+                                                <span className="camera-description">
+
+                                                    {
+                                                        getCameraDescription(
+                                                            camera
+                                                        )
+                                                    }
+
+                                                </span>
+
+                                            </div>
+
+
+                                            <div className="camera-item-actions">
+
+                                                <button
+
+                                                    className="delete-camera-button"
+
+                                                    onClick={
+                                                        (event) => {
+
+                                                            event.stopPropagation();
+
+
+                                                            handleDeleteCamera(
+                                                                cameraId
+                                                            );
+
+                                                        }
+                                                    }
+
+                                                    title="Remove camera"
+
+                                                >
+                                                    🗑
+                                                </button>
+
+                                            </div>
 
                                         </div>
 
+                                    );
 
-                                        <p>
-                                            📍 {camera.location || "Location not specified"}
-                                        </p>
-
-                                        <span className="camera-description">
-                                            {camera.description ||
-                                                "No description"}
-                                        </span>
-
-                                    </div>
-
-
-                                    <div className="camera-item-actions">
-
-                                        <button
-                                            className="delete-camera-button"
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                handleDeleteCamera(
-                                                    camera.id
-                                                );
-                                            }}
-                                            title="Remove camera"
-                                        >
-                                            🗑
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            ))
+                                }
+                            )
 
                         )}
 
@@ -817,6 +2160,7 @@ const RegisteredCameras = () => {
 
                 <div className="footage-card">
 
+
                     {!selectedCamera ? (
 
                         <div className="footage-empty-state">
@@ -825,9 +2169,11 @@ const RegisteredCameras = () => {
                                 🎥
                             </div>
 
+
                             <h2>
                                 Select a Camera
                             </h2>
+
 
                             <p>
                                 Select a camera from the list to
@@ -840,26 +2186,40 @@ const RegisteredCameras = () => {
 
                         <>
 
-                            {/* Selected camera header */}
+
+                            {/* ==================================================
+                                SELECTED CAMERA HEADER
+                            ================================================== */}
 
                             <div className="selected-camera-header">
 
+
                                 <div className="selected-camera-title">
+
 
                                     <div className="selected-camera-icon">
                                         📹
                                     </div>
 
+
                                     <div>
 
                                         <h2>
-                                            {selectedCamera.cameraName}
+                                            {
+                                                getCameraName(
+                                                    selectedCamera
+                                                )
+                                            }
                                         </h2>
+
 
                                         <p>
                                             📍{" "}
-                                            {selectedCamera.location ||
-                                                "Location not specified"}
+                                            {
+                                                getCameraLocation(
+                                                    selectedCamera
+                                                )
+                                            }
                                         </p>
 
                                     </div>
@@ -868,22 +2228,38 @@ const RegisteredCameras = () => {
 
 
                                 <span
-                                    className={`large-status-badge ${selectedCamera.status === "ONLINE"
-                                        ? "online"
-                                        : "offline"
-                                        }`}
+                                    className={`
+                                        large-status-badge
+                                        ${getCameraDisplayStatus(
+                                        selectedCamera
+                                    )
+                                            ===
+                                            "ONLINE"
+                                            ? "online"
+                                            : "offline"
+                                        }
+                                    `}
                                 >
+
                                     <span className="status-dot"></span>
 
-                                    {selectedCamera.status}
+                                    {
+                                        getCameraDisplayStatus(
+                                            selectedCamera
+                                        )
+                                    }
+
                                 </span>
 
                             </div>
 
 
-                            {/* Upload section */}
+                            {/* ==================================================
+                                UPLOAD SECTION
+                            ================================================== */}
 
                             <div className="footage-upload-section">
+
 
                                 <div className="upload-section-header">
 
@@ -892,6 +2268,7 @@ const RegisteredCameras = () => {
                                         <h3>
                                             Upload CCTV Footage
                                         </h3>
+
 
                                         <p>
                                             Upload recorded footage
@@ -905,11 +2282,15 @@ const RegisteredCameras = () => {
 
 
                                 <label
-                                    className={`video-drop-zone ${selectedVideo
-                                        ? "has-file"
-                                        : ""
-                                        }`}
+                                    className={`
+                                        video-drop-zone
+                                        ${selectedVideo
+                                            ? "has-file"
+                                            : ""
+                                        }
+                                    `}
                                 >
+
 
                                     <div className="video-upload-icon">
                                         🎞️
@@ -919,49 +2300,76 @@ const RegisteredCameras = () => {
                                     {selectedVideo ? (
 
                                         <>
+
                                             <h4>
-                                                {selectedVideo.name}
+                                                {
+                                                    selectedVideo.name
+                                                }
                                             </h4>
 
+
                                             <p>
-                                                {(
-                                                    selectedVideo.size /
-                                                    (1024 * 1024)
-                                                ).toFixed(2)}{" "}
+
+                                                {
+                                                    (
+                                                        selectedVideo.size
+                                                        /
+                                                        (
+                                                            1024 *
+                                                            1024
+                                                        )
+                                                    ).toFixed(2)
+                                                }{" "}
                                                 MB
+
                                             </p>
 
+
                                             <span className="change-video-text">
+
                                                 Click to choose another
                                                 video
+
                                             </span>
+
                                         </>
 
                                     ) : (
 
                                         <>
+
                                             <h4>
                                                 Select CCTV Video
                                             </h4>
+
 
                                             <p>
                                                 Drag and drop your video
                                                 here or click to browse
                                             </p>
 
+
                                             <span className="supported-video-formats">
                                                 MP4, AVI, MOV, MKV
                                             </span>
+
                                         </>
 
                                     )}
 
 
                                     <input
+
                                         ref={fileInputRef}
+
                                         type="file"
+
                                         accept="video/*"
-                                        onChange={handleVideoSelect}
+
+                                        onChange={
+                                            handleVideoSelect
+                                        }
+
                                     />
 
                                 </label>
@@ -969,44 +2377,84 @@ const RegisteredCameras = () => {
 
                                 <div className="upload-actions">
 
+
                                     <button
+
                                         className="upload-footage-button"
+
                                         onClick={
                                             handleUploadVideo
                                         }
+
                                         disabled={
+
                                             !selectedVideo
+
+                                            ||
+
+                                            uploadingVideo
+
                                         }
+
                                     >
-                                        🎬 Upload Footage
+
+                                        {
+                                            uploadingVideo
+                                                ? "Uploading..."
+                                                : "🎬 Upload Footage"
+                                        }
+
                                     </button>
 
+
                                     {selectedVideo && (
+
                                         <button
+
                                             className="cancel-upload-button"
+
                                             onClick={() => {
-                                                setSelectedVideo(null);
+
+                                                setSelectedVideo(
+                                                    null
+                                                );
+
 
                                                 if (
                                                     fileInputRef.current
                                                 ) {
+
                                                     fileInputRef.current.value =
                                                         "";
+
                                                 }
+
                                             }}
+
+                                            disabled={
+                                                uploadingVideo
+                                            }
+
                                         >
+
                                             Cancel
+
                                         </button>
+
                                     )}
 
                                 </div>
 
+
                             </div>
 
 
-                            {/* Existing footage */}
+                            {/* ==================================================
+                                RECORDED FOOTAGE
+                            ================================================== */}
 
                             <div className="footage-list-section">
+
 
                                 <div className="section-header">
 
@@ -1016,13 +2464,25 @@ const RegisteredCameras = () => {
                                             Recorded Footage
                                         </h3>
 
+
                                         <p>
-                                            {getCameraVideos().length}{" "}
+
+                                            {
+                                                getCameraVideos()
+                                                    .length
+                                            }{" "}
+
                                             footage file
-                                            {getCameraVideos().length === 1
-                                                ? ""
-                                                : "s"}{" "}
+                                            {
+                                                getCameraVideos()
+                                                    .length
+                                                    ===
+                                                    1
+                                                    ? ""
+                                                    : "s"
+                                            }{" "}
                                             available
+
                                         </p>
 
                                     </div>
@@ -1030,7 +2490,28 @@ const RegisteredCameras = () => {
                                 </div>
 
 
-                                {getCameraVideos().length === 0 ? (
+                                {loadingFootage ? (
+
+                                    <div className="no-footage">
+
+                                        <div>
+                                            ⏳
+                                        </div>
+
+
+                                        <h4>
+                                            Loading footage...
+                                        </h4>
+
+
+                                        <p>
+                                            Please wait while the
+                                            camera footage is loaded.
+                                        </p>
+
+                                    </div>
+
+                                ) : getCameraVideos().length === 0 ? (
 
                                     <div className="no-footage">
 
@@ -1038,9 +2519,11 @@ const RegisteredCameras = () => {
                                             🎞️
                                         </div>
 
+
                                         <h4>
                                             No recorded footage
                                         </h4>
+
 
                                         <p>
                                             Upload a CCTV video to
@@ -1054,94 +2537,178 @@ const RegisteredCameras = () => {
 
                                     <div className="footage-list">
 
+
                                         {getCameraVideos().map(
-                                            (video) => (
+                                            (video) => {
 
-                                                <div
-                                                    className="footage-item"
-                                                    key={video.id}
-                                                >
-
-                                                    <div className="footage-file-icon">
-                                                        🎬
-                                                    </div>
+                                                const status =
+                                                    String(
+                                                        video.status
+                                                        ??
+                                                        "UPLOADED"
+                                                    ).toUpperCase();
 
 
-                                                    <div className="footage-info">
+                                                return (
 
-                                                        <h4>
-                                                            {video.fileName}
-                                                        </h4>
+                                                    <div
 
-                                                        <div className="footage-meta">
+                                                        className="footage-item"
 
-                                                            <span>
-                                                                📅{" "}
-                                                                {video.date}
-                                                            </span>
+                                                        key={
+                                                            video.id
+                                                        }
 
-                                                            <span>
-                                                                🕐{" "}
-                                                                {video.startTime}
-                                                                {" - "}
-                                                                {video.endTime}
-                                                            </span>
+                                                    >
 
-                                                            <span>
-                                                                ⏱{" "}
-                                                                {video.duration}
-                                                            </span>
+
+                                                        <div className="footage-file-icon">
+                                                            🎬
+                                                        </div>
+
+
+                                                        <div className="footage-info">
+
+
+                                                            <h4>
+                                                                {
+                                                                    video.fileName
+                                                                }
+                                                            </h4>
+
+
+                                                            <div className="footage-meta">
+
+
+                                                                <span>
+                                                                    📅{" "}
+                                                                    {
+                                                                        video.date
+                                                                    }
+                                                                </span>
+
+
+                                                                <span>
+                                                                    🕐{" "}
+                                                                    {
+                                                                        video.startTime
+                                                                    }
+                                                                    {" - "}
+                                                                    {
+                                                                        video.endTime
+                                                                    }
+                                                                </span>
+
+
+                                                                <span>
+                                                                    ⏱{" "}
+                                                                    {
+                                                                        video.duration
+                                                                    }
+                                                                </span>
+
+                                                            </div>
 
                                                         </div>
 
+
+                                                        <span
+
+                                                            className={`
+                                                                footage-status
+                                                                ${status.toLowerCase()}
+                                                            `}
+
+                                                        >
+
+                                                            {
+                                                                status
+                                                            }
+
+                                                        </span>
+
+
+                                                        {status ===
+                                                            "UPLOADED" && (
+
+                                                                <button
+
+                                                                    className="process-footage-button"
+
+                                                                    onClick={() =>
+                                                                        handleProcessFootage(
+                                                                            video.id
+                                                                        )
+                                                                    }
+
+                                                                >
+
+                                                                    ⚙ Process
+
+                                                                </button>
+
+                                                            )}
+
+
+                                                        {status ===
+                                                            "PROCESSING" && (
+
+                                                                <span className="processing-label">
+
+                                                                    Processing...
+
+                                                                </span>
+
+                                                            )}
+
+
+                                                        {status ===
+                                                            "COMPLETED" && (
+
+                                                                <span className="completed-label">
+
+                                                                    ✓ Processed
+
+                                                                </span>
+
+                                                            )}
+
+
+                                                        {status ===
+                                                            "FAILED" && (
+
+                                                                <span className="processing-label">
+
+                                                                    Processing failed
+
+                                                                </span>
+
+                                                            )}
+
+
+                                                        <button
+
+                                                            className="remove-footage-button"
+
+                                                            onClick={() =>
+                                                                handleRemoveVideo(
+                                                                    video.id
+                                                                )
+                                                            }
+
+                                                            title="Remove footage"
+
+                                                        >
+
+                                                            🗑
+
+                                                        </button>
+
                                                     </div>
 
+                                                );
 
-                                                    <span
-                                                        className={`footage-status ${video.status.toLowerCase()}`}
-                                                    >
-                                                        {video.status}
-                                                    </span>
-
-                                                    {video.status === "UPLOADED" && (
-                                                        <button
-                                                            className="process-footage-button"
-                                                            onClick={() =>
-                                                                handleProcessFootage(video.id)
-                                                            }
-                                                        >
-                                                            ⚙ Process
-                                                        </button>
-                                                    )}
-
-                                                    {video.status === "PROCESSING" && (
-                                                        <span className="processing-label">
-                                                            Processing...
-                                                        </span>
-                                                    )}
-
-                                                    {video.status === "COMPLETED" && (
-                                                        <span className="completed-label">
-                                                            ✓ Processed
-                                                        </span>
-                                                    )}
-
-
-                                                    <button
-                                                        className="remove-footage-button"
-                                                        onClick={() =>
-                                                            handleRemoveVideo(
-                                                                video.id
-                                                            )
-                                                        }
-                                                        title="Remove footage"
-                                                    >
-                                                        🗑
-                                                    </button>
-
-                                                </div>
-
-                                            )
+                                            }
                                         )}
 
                                     </div>
@@ -1166,38 +2733,61 @@ const RegisteredCameras = () => {
             {showAddCamera && (
 
                 <div
+
                     className="modal-overlay"
+
                     onClick={() =>
-                        setShowAddCamera(false)
+                        setShowAddCamera(
+                            false
+                        )
                     }
+
                 >
 
+
                     <div
+
                         className="add-camera-modal"
-                        onClick={(event) =>
-                            event.stopPropagation()
+
+                        onClick={
+                            (event) =>
+                                event.stopPropagation()
                         }
+
                     >
+
 
                         <div className="modal-header">
 
+
                             <div>
+
                                 <span className="modal-eyebrow">
                                     Camera Configuration
                                 </span>
 
+
                                 <h2>
                                     Add New Camera
                                 </h2>
+
                             </div>
 
+
                             <button
+
                                 className="modal-close"
+
                                 onClick={() =>
-                                    setShowAddCamera(false)
+                                    setShowAddCamera(
+                                        false
+                                    )
                                 }
+
                             >
+
                                 ×
+
                             </button>
 
                         </div>
@@ -1209,23 +2799,32 @@ const RegisteredCameras = () => {
                             }
                         >
 
+
                             <div className="form-group">
 
                                 <label>
                                     Camera Name
                                 </label>
 
+
                                 <input
+
                                     type="text"
+
                                     name="cameraName"
+
                                     value={
                                         cameraForm.cameraName
                                     }
+
                                     onChange={
                                         handleCameraFormChange
                                     }
+
                                     placeholder="e.g. Main Gate Camera"
+
                                     required
+
                                 />
 
                             </div>
@@ -1237,16 +2836,23 @@ const RegisteredCameras = () => {
                                     Location
                                 </label>
 
+
                                 <input
+
                                     type="text"
+
                                     name="location"
+
                                     value={
                                         cameraForm.location
                                     }
+
                                     onChange={
                                         handleCameraFormChange
                                     }
+
                                     placeholder="e.g. Main Entrance"
+
                                 />
 
                             </div>
@@ -1258,23 +2864,30 @@ const RegisteredCameras = () => {
                                     Camera Type
                                 </label>
 
+
                                 <select
+
                                     name="cameraType"
+
                                     value={
                                         cameraForm.cameraType
                                     }
+
                                     onChange={
                                         handleCameraFormChange
                                     }
+
                                 >
 
                                     <option value="CCTV">
                                         CCTV Camera
                                     </option>
 
+
                                     <option value="IP_CAMERA">
                                         IP Camera
                                     </option>
+
 
                                     <option value="NETWORK_CAMERA">
                                         Network Camera
@@ -1291,16 +2904,23 @@ const RegisteredCameras = () => {
                                     Description
                                 </label>
 
+
                                 <textarea
+
                                     name="description"
+
                                     value={
                                         cameraForm.description
                                     }
+
                                     onChange={
                                         handleCameraFormChange
                                     }
+
                                     placeholder="Optional camera description"
+
                                     rows="3"
+
                                 />
 
                             </div>
@@ -1308,35 +2928,57 @@ const RegisteredCameras = () => {
 
                             <div className="modal-actions">
 
-                                <button
-                                    type="button"
-                                    className="modal-cancel-button"
-                                    onClick={() =>
-                                        setShowAddCamera(false)
-                                    }
-                                >
-                                    Cancel
-                                </button>
 
                                 <button
-                                    type="submit"
-                                    className="modal-save-button"
+
+                                    type="button"
+
+                                    className="modal-cancel-button"
+
+                                    onClick={() =>
+                                        setShowAddCamera(
+                                            false
+                                        )
+                                    }
+
                                 >
-                                    Add Camera
+
+                                    Cancel
+
                                 </button>
+
+
+                                <button
+
+                                    type="submit"
+
+                                    className="modal-save-button"
+
+                                >
+
+                                    Add Camera
+
+                                </button>
+
 
                             </div>
 
+
                         </form>
 
+
                     </div>
+
 
                 </div>
 
             )}
 
         </div>
+
     );
+
 };
+
 
 export default RegisteredCameras;

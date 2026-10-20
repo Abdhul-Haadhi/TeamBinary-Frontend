@@ -5,8 +5,57 @@ import {
 } from "lucide-react";
 
 
-// ── Backend Base URL ───────────────────────────────────────────────────────────
+// ============================================================
+// BACKEND API
+// ============================================================
+
 const API_BASE = "http://localhost:8080/api";
+
+const CAMERA_API = `${API_BASE}/cameras`;
+
+const NETWORK_API = `${API_BASE}/networks`;
+
+
+// ============================================================
+// AUTH HELPERS
+// ============================================================
+
+const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+
+const getAuthHeaders = () => {
+
+  const token = getToken();
+
+  if (!token) {
+    throw new Error(
+      "Authentication token not found. Please log in again."
+    );
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+
+const getJsonAuthHeaders = () => {
+
+  const token = getToken();
+
+  if (!token) {
+    throw new Error(
+      "Authentication token not found. Please log in again."
+    );
+  }
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 // ── Status Config ──────────────────────────────────────────────────────────────
 const STATUS_CFG = {
@@ -17,17 +66,52 @@ const STATUS_CFG = {
 
 const ALL_STATUSES = ["ACTIVE", "INACTIVE", "OFFLINE"];
 const EMPTY_FORM = { ip: "", location: "", networkId: "", status: "ACTIVE" };
-const isValidIP = (v) => /^(\d{1,3}\.){3}\d{1,3}$/.test(v);
+// const isValidIP = (v) => /^(\d{1,3}\.){3}\d{1,3}$/.test(v);
+const isValidIP = (value) => {
+
+  const parts = value.trim().split(".");
+
+  if (parts.length !== 4) {
+    return false;
+  }
+
+  return parts.every(
+    (part) =>
+      /^\d{1,3}$/.test(part) &&
+      Number(part) >= 0 &&
+      Number(part) <= 255
+  );
+};
 const padId = (n) => String(n).padStart(3, "0");
 
 // ── Backend response → frontend shape mappers ──────────────────────────────────
 const mapCamera = (c) => ({
-  id: c.cameraId,
-  ip: c.ipAddress,
-  location: c.location,
-  status: c.status,
-  networkId: c.networkId,
-  networkName: c.networkName ?? "Unassigned",
+
+  id:
+    c.cameraId ??
+    c.id,
+
+  ip:
+    c.ipAddress ??
+    c.ip ??
+    "",
+
+  location:
+    c.location ??
+    "",
+
+  status:
+    c.status ??
+    "OFFLINE",
+
+  networkId:
+    c.networkId ??
+    null,
+
+  networkName:
+    c.networkName ??
+    "Unassigned",
+
 });
 
 const mapNetwork = (n) => ({
@@ -223,15 +307,117 @@ export default function CameraManagement() {
   // API helpers
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   const fetchCameras = useCallback(async () => {
-    const res = await fetch(`${API_BASE}/cameras`);
+
+    const res = await fetch(
+      CAMERA_API,
+      {
+        method: "GET",
+        headers: getAuthHeaders(),
+      }
+    );
+
+
+    if (res.status === 401) {
+
+      throw new Error(
+        "Your session has expired. Please log in again."
+      );
+    }
+
+
+    if (res.status === 403) {
+
+      throw new Error(
+        "You do not have permission to access camera management."
+      );
+    }
+
+
+    if (!res.ok) {
+
+      const message = await res.text();
+
+      throw new Error(
+        message ||
+        "Failed to load cameras."
+      );
+    }
+
+
     const data = await res.json();
-    setCameras(data.map(mapCamera));
+
+
+    const cameraList =
+      Array.isArray(data)
+        ? data
+        : Array.isArray(data.data)
+          ? data.data
+          : Array.isArray(data.cameras)
+            ? data.cameras
+            : [];
+
+
+    setCameras(
+      cameraList.map(mapCamera)
+    );
+
   }, []);
 
   const fetchNetworks = useCallback(async () => {
-    const res = await fetch(`${API_BASE}/networks`);
+
+    const res = await fetch(
+      NETWORK_API,
+      {
+        method: "GET",
+        headers: getAuthHeaders(),
+      }
+    );
+
+
+    if (res.status === 401) {
+
+      throw new Error(
+        "Your session has expired. Please log in again."
+      );
+    }
+
+
+    if (res.status === 403) {
+
+      throw new Error(
+        "You do not have permission to access camera networks."
+      );
+    }
+
+
+    if (!res.ok) {
+
+      const message = await res.text();
+
+      throw new Error(
+        message ||
+        "Failed to load networks."
+      );
+    }
+
+
     const data = await res.json();
-    setNetworks(data.map(mapNetwork));
+
+
+    const networkList =
+      Array.isArray(data)
+        ? data
+        : Array.isArray(data.data)
+          ? data.data
+          : Array.isArray(data.networks)
+            ? data.networks
+            : [];
+
+
+    setNetworks(
+      networkList.map(mapNetwork)
+    );
+
   }, []);
 
   const refreshAll = useCallback(async () => {
@@ -287,16 +473,24 @@ export default function CameraManagement() {
     if (!validateForm()) return;
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE}/cameras`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ipAddress: form.ip.trim(),
-          location: form.location.trim(),
-          networkId: parseInt(form.networkId),
-          status: form.status,
-        }),
-      });
+      const res = await fetch(
+        CAMERA_API,
+        {
+          method: "POST",
+
+          headers: getJsonAuthHeaders(),
+
+          body: JSON.stringify({
+            ipAddress: form.ip.trim(),
+            location: form.location.trim(),
+            networkId: parseInt(
+              form.networkId,
+              10
+            ),
+            status: form.status,
+          }),
+        }
+      );
 
       if (!res.ok) {
         const msg = await res.text();
@@ -317,44 +511,131 @@ export default function CameraManagement() {
   };
 
   // PATCH /api/cameras/{id}/status
-  const handleCameraStatusChange = async (camId, newStatus) => {
-    try {
-      const res = await fetch(`${API_BASE}/cameras/${camId}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
+  const handleCameraStatusChange = async (
+    camId,
+    newStatus
+  ) => {
 
-      if (!res.ok) {
-        showToast("Failed to update camera status", true);
-        return;
+    try {
+
+      const res = await fetch(
+        `${CAMERA_API}/${camId}/status`,
+        {
+          method: "PATCH",
+
+          headers: getJsonAuthHeaders(),
+
+          body: JSON.stringify({
+            status: newStatus,
+          }),
+        }
+      );
+
+
+      if (res.status === 401) {
+
+        throw new Error(
+          "Your session has expired. Please log in again."
+        );
       }
 
+
+      if (res.status === 403) {
+
+        throw new Error(
+          "You do not have permission to update camera status."
+        );
+      }
+
+
+      if (!res.ok) {
+
+        const message = await res.text();
+
+        throw new Error(
+          message ||
+          "Failed to update camera status."
+        );
+      }
+
+
       await refreshAll();
-      showToast(`CAM-${padId(camId)} updated to ${STATUS_CFG[newStatus].label}`);
+
+
+      showToast(
+        `CAM-${padId(camId)} updated to ${STATUS_CFG[newStatus].label}`
+      );
+
+
     } catch (err) {
-      showToast("Server error. Check your backend.", true);
+
+      showToast(
+        err.message ||
+        "Server error. Check your backend.",
+        true
+      );
     }
   };
 
   // DELETE /api/cameras/{id}
   const handleDeleteCamera = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/cameras/${activeCam.id}`, {
-        method: "DELETE",
-      });
 
-      if (!res.ok) {
-        showToast("Failed to delete camera", true);
-        return;
+    try {
+
+      const res = await fetch(
+        `${CAMERA_API}/${activeCam.id}`,
+        {
+          method: "DELETE",
+          headers: getAuthHeaders(),
+        }
+      );
+
+
+      if (res.status === 401) {
+
+        throw new Error(
+          "Your session has expired. Please log in again."
+        );
       }
 
+
+      if (res.status === 403) {
+
+        throw new Error(
+          "You do not have permission to delete cameras."
+        );
+      }
+
+
+      if (!res.ok) {
+
+        const message = await res.text();
+
+        throw new Error(
+          message ||
+          "Failed to delete camera."
+        );
+      }
+
+
       await refreshAll();
+
       setDeleteOpen(false);
+
       setActiveCam(null);
-      showToast("Camera removed");
+
+      showToast(
+        "Camera removed"
+      );
+
+
     } catch (err) {
-      showToast("Server error. Check your backend.", true);
+
+      showToast(
+        err.message ||
+        "Server error. Check your backend.",
+        true
+      );
     }
   };
 
@@ -367,11 +648,19 @@ export default function CameraManagement() {
     if (!netName.trim()) { setNetErr("Network name is required"); return; }
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE}/networks/add-network`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ networkName: netName.trim(), status: "ACTIVE" }),
-      });
+      const res = await fetch(
+        `${NETWORK_API}/add-network`,
+        {
+          method: "POST",
+
+          headers: getJsonAuthHeaders(),
+
+          body: JSON.stringify({
+            networkName: netName.trim(),
+            status: "ACTIVE",
+          }),
+        }
+      );
 
       if (!res.ok) {
         const msg = await res.text();
@@ -394,11 +683,18 @@ export default function CameraManagement() {
   // PATCH /api/networks/{id}/status
   const handleNetworkStatusChange = async (newStatus) => {
     try {
-      const res = await fetch(`${API_BASE}/networks/${activeNet.id}/status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const res = await fetch(
+        `${NETWORK_API}/${activeNet.id}/status`,
+        {
+          method: "PATCH",
+
+          headers: getJsonAuthHeaders(),
+
+          body: JSON.stringify({
+            status: newStatus,
+          }),
+        }
+      );
 
       if (!res.ok) {
         showToast("Failed to update network status", true);
@@ -417,9 +713,14 @@ export default function CameraManagement() {
   // DELETE /api/networks/{id}
   const handleDeleteNetwork = async () => {
     try {
-      const res = await fetch(`${API_BASE}/networks/${deleteNet.id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${NETWORK_API}/${deleteNet.id}`,
+        {
+          method: "DELETE",
+
+          headers: getAuthHeaders(),
+        }
+      );
 
       if (!res.ok) {
         showToast("Failed to delete network", true);
@@ -473,7 +774,7 @@ export default function CameraManagement() {
       <div className="flex items-center gap-3 mb-7">
         <div className="p-2.5 bg-blue-600 rounded-xl"><Camera size={22} /></div>
         <div>
-          <h1 className="text-2xl font-bold">Camera Management</h1>
+          <h1 className="text-black text-2xl font-bold">Camera Management</h1>
           <p className="text-gray-400 text-sm mt-0.5">
             Monitor and manage all CCTV cameras across the network
           </p>

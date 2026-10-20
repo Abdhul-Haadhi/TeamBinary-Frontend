@@ -12,6 +12,7 @@ import {
 
 import "../css/NavBar.css";
 import autoTraceLogo from "../assets/autoTraceLogo.png";
+import { useNavigate } from "react-router-dom";
 
 
 const NavBar = ({
@@ -29,6 +30,8 @@ const NavBar = ({
     // =========================================================
     // USER
     // =========================================================
+
+    const navigate = useNavigate();
 
     const getStoredUser = () => {
 
@@ -106,17 +109,15 @@ const NavBar = ({
     // =========================================================
 
     const handleLogout = () => {
+        // Remove the user's authentication data
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
 
-        localStorage.removeItem(
-            "user"
-        );
+        // Close the profile dropdown
+        setShowProfile(false);
 
-        localStorage.removeItem(
-            "token"
-        );
-
-        window.location.href =
-            "/login";
+        // Go to login and replace the current history entry
+        navigate("/login", { replace: true });
     };
 
 

@@ -103,11 +103,17 @@ const SideBar = ({
       icon: Camera,
     },
 
-    {
-      path: "/registered-cameras",
-      label: "Registered Cameras",
-      icon: Network,
-    },
+    // {
+    //   path: "/registered-cameras",
+    //   label: "Registered Cameras",
+    //   icon: Network,
+    // },
+
+    // {
+    //   path: "/camera-management",
+    //   label: "Cameras",
+    //   icon: Network,
+    // },
 
     {
       path: "/investigator-management",

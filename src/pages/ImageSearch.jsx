@@ -81,6 +81,21 @@ const ImageSearch = () => {
             return;
         }
 
+        const storedToken = localStorage.getItem("token");
+
+        console.log(
+            "Token exists:",
+            !!storedToken
+        );
+
+        if (!storedToken) {
+
+            setError(
+                "Authentication token not found. Please log in again."
+            );
+
+            return;
+        }
 
         setLoading(true);
 
@@ -111,6 +126,12 @@ const ImageSearch = () => {
                 "http://localhost:8080/api/vehicle-search/search",
                 {
                     method: "POST",
+
+                    headers: {
+                        Authorization:
+                            `Bearer ${storedToken}`,
+                    },
+
                     body: formData,
                 }
             );
@@ -121,9 +142,30 @@ const ImageSearch = () => {
 
 
             console.log(
+                "Vehicle search status:",
+                response.status
+            );
+
+            console.log(
                 "Vehicle search raw response:",
                 responseText
             );
+
+
+            if (response.status === 401) {
+
+                throw new Error(
+                    "Your session has expired. Please log in again."
+                );
+            }
+
+
+            if (response.status === 403) {
+
+                throw new Error(
+                    "You do not have permission to perform vehicle search."
+                );
+            }
 
 
             if (!response.ok) {
@@ -139,10 +181,9 @@ const ImageSearch = () => {
 
             try {
 
-                data =
-                    JSON.parse(
-                        responseText
-                    );
+                data = JSON.parse(
+                    responseText
+                );
 
             } catch (jsonError) {
 
@@ -210,9 +251,7 @@ const ImageSearch = () => {
             // =====================================================
 
             const backendResults =
-                Array.isArray(
-                    data.results
-                )
+                Array.isArray(data.results)
                     ? data.results
                     : [];
 
@@ -258,7 +297,6 @@ const ImageSearch = () => {
                 );
 
             }
-
 
         } catch (error) {
 
